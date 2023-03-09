@@ -1,4 +1,4 @@
-﻿using PlottingLibrary01;
+﻿
 using PlottingWpf;
 using System;
 using System.Collections.Generic;
@@ -100,8 +100,8 @@ namespace EasyPlot
             cs.GridLinePattern = GridLinePatternEnum.Dot;
             cs.GridLineColor = Brushes.Black;
             cs.AddChartstyle(tbTitle, tbXLabel, tbYLabel);
-            
-            
+
+            dc = new DataCollection();
             ds = new DataSeries();
             ds.LineThickness = thickness;
             ds.LineColor = Brushes.Blue;
