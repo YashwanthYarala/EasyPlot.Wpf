@@ -1,4 +1,4 @@
-﻿using PlottingLibrary01;
+﻿
 using PlottingWpf;
 using System;
 using System.Collections.Generic;
@@ -76,6 +76,10 @@ namespace EasyPlot
             dc.DataList.Add(ds);
 
         }
+        public void AddScatter(double[] xvalues, double[] yvalues)
+        {
+
+        }
         private void AddChart(double xmin, double xmax, double ymin, double ymax)
         {
             cs.Title = Title_;
@@ -86,8 +90,8 @@ namespace EasyPlot
             cs.GridLinePattern = GridLinePatternEnum.Dot;
             cs.GridLineColor = Brushes.Black;
             cs.AddChartstyle(tbTitle, tbXLabel, tbYLabel);
-            
-            
+
+            dc = new DataCollection();
             ds = new DataSeries();
             ds.LineThickness = thickness;
             ds.LineColor = Brushes.Blue;
