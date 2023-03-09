@@ -379,7 +379,10 @@ namespace EasyPlot
             {
                 cs.YLabel = YLabel;
             }
-           
+            public void ZoomLock(bool Lock)
+            {
+
+            }
             
         }
 
