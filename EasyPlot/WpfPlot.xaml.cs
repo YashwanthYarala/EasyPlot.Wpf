@@ -383,6 +383,10 @@ namespace EasyPlot
             {
 
             }
+            public void FitToScreem()
+            {
+
+            }
             
         }
 
