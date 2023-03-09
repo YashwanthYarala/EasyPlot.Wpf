@@ -43,6 +43,7 @@ namespace EasyPlot
         public double[] xVal { get; set; }
         public double[] yVal { get; set; }
         private double thickness { get; set; } = 1;
+        private PlotSeriesEnum plotSeries { get; set; }
         public WpfPlot()
         {
             InitializeComponent();
@@ -62,6 +63,8 @@ namespace EasyPlot
         public void AddGatePulse(double[] xvalues, double[] yvalues)
         {
             //series values to point conversion
+            plotSeries = PlotSeriesEnum.PulseGate;
+
             SignalValueToPoints signalValueToPoints = new SignalValueToPoints();
             var k = signalValueToPoints.Convert(yvalues, xvalues);
             double[] y = k[1].ToArray();
@@ -75,6 +78,17 @@ namespace EasyPlot
             }
             dc.DataList.Add(ds);
 
+        }
+        public void AddScatter(double[] xvalues, double[] yvalues)
+        {
+            plotSeries = PlotSeriesEnum.Scatter;
+            xVal = xvalues;
+            yVal = yvalues;
+            for (int i = 0; i < xvalues.Length; i++)
+            {
+                ds.LineSeries.Points.Add(new Point(xvalues[i], yvalues[i]));
+            }
+            dc.DataList.Add(ds);
         }
         private void AddChart(double xmin, double xmax, double ymin, double ymax)
         {
@@ -91,7 +105,16 @@ namespace EasyPlot
             ds = new DataSeries();
             ds.LineThickness = thickness;
             ds.LineColor = Brushes.Blue;
-            AddGatePulse(xVal, yVal);
+            switch (plotSeries)
+            {
+                case PlotSeriesEnum.Scatter:
+                    AddScatter(xVal, yVal);
+                    break;
+                case PlotSeriesEnum.PulseGate:
+                    AddGatePulse(xVal, yVal);
+                    break;
+            }
+
             
             dc.AddLines(cs);
         }
@@ -308,87 +331,13 @@ namespace EasyPlot
         }
         #endregion
 
-        public class Plot:WpfPlot
-        {
-            public void AddScatter(double[] xvalues, double[] yvalues)
-            {
-                ds = new DataSeries();
-                for(int i=0;i<yvalues.Length;i++)
-                {
-                    ds.LineSeries.Points.Add(new Point(xvalues[i], yvalues[i]));
-                }
-                dc.DataList.Add(ds);
+        
 
-                
-            }
-            public void AddGatePulse(double[] xvalues, double[] yvalues)
-            {
-                //series values to point conversion
-                SignalValueToPoints signalValueToPoints = new SignalValueToPoints();
-                var k =  signalValueToPoints.Convert(yvalues, xvalues);
-                double[]y = k[1].ToArray();
-                double[]x = k[0].ToArray();
-                ds = new DataSeries();
-               
-                for(int i = 0; i < x.Length; i++)
-                {
-                    ds.LineSeries.Points.Add(new Point(x[i], y[i]));
-                }
-                dc.DataList.Add(ds);
-
-            }
-
-
-            //UI properties
-            public void Frameless(bool IsFrameless)
-            {
-                if (IsFrameless)
-                {
-                    tbTitle.Visibility = Visibility.Collapsed;
-                    tbXLabel.Visibility = Visibility.Collapsed;
-                    tbYLabel.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    tbTitle.Visibility = Visibility.Visible;
-                    tbXLabel.Visibility = Visibility.Visible;
-                    tbYLabel.Visibility = Visibility.Visible;
-                }
-               
-            }
-            public void IsGrid(bool XGrid,bool YGrid)
-            {
-                cs.IsXGrid = XGrid;
-                cs.IsYGrid = YGrid; 
-            }
-            public void PanningLock(bool Horizontal,bool Vertical)
-            {
-
-            }
-            public void Title(string title)
-            {
-                cs.Title = title;
-                Title_ = title;
-
-            }
-            public void Xlabel(string XLabel)
-            {
-                cs.XLabel = XLabel;
-            }
-            public void Ylabel(string YLabel)
-            {
-                cs.YLabel = YLabel;
-            }
-            public void ZoomLock(bool Lock)
-            {
-
-            }
-            public void FitToScreem()
-            {
-
-            }
-            
-        }
-
+    }
+    public enum PlotSeriesEnum
+    {
+        None = 0,
+        Scatter = 1,
+        PulseGate  = 2,
     }
 }
