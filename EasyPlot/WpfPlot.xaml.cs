@@ -60,6 +60,7 @@ namespace EasyPlot
             cs.YMin = ymin0;
             cs.Ymax = ymax0;
         }
+        #region Plot Series Types
         public void AddGatePulse(double[] xvalues, double[] yvalues)
         {
             //series values to point conversion
@@ -90,6 +91,8 @@ namespace EasyPlot
             }
             dc.DataList.Add(ds);
         }
+        #endregion
+        #region Chart Related
         private void AddChart(double xmin, double xmax, double ymin, double ymax)
         {
             cs.Title = Title_;
@@ -127,6 +130,8 @@ namespace EasyPlot
             textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
             AddChart(cs.XMin, cs.XMax, cs.YMin, cs.Ymax);
         }
+        #endregion
+        #region Mouse Events
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
             double dx = (e.Delta > 0) ? xIncrement : -xIncrement;
@@ -291,13 +296,63 @@ namespace EasyPlot
             textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
             AddChart(xmin0, xmax0, ymin0, ymax0);
         }
+        #endregion
         //UI functions
         #region UI Methods
+                 #region Grid Methods
         public void IsGrid(bool IsXgrid,bool IsYgrid)
         {
+            ///<summary>
+            ///This Method Sets The Grid Lines to Plot
+            ///</summary>
             cs.IsYGrid = IsYgrid;
             cs.IsXGrid = IsXgrid;
         }
+        public void IsXGrid(bool IsXgrid)
+        {
+            ///<summary>
+            ///This Method Sets The Vetical-Grid Lines to Plot
+            ///</summary>
+            cs.IsXGrid = IsXgrid;
+        }
+        public void IsYGrid(bool IsYgrid)
+        {
+            ///<summary>
+            ///This Method Sets The Horizontal-Grid Lines to Plot
+            ///</summary>
+            cs.IsYGrid = IsYgrid;
+        }
+        public void GridLineThickness(double thickness)
+        {
+            ///<summary>
+            ///This Method Sets the Thickness of the Grid Lines
+            ///Pass Double Value as a thickness parameter
+            ///</summary>
+            cs.GridLine.StrokeThickness = thickness;
+        }
+        public void GridLineColor(Brush brush)
+        {
+            ///<summary>
+            ///This Method Sets the Color of the Grid Lines
+            ///Pass Brush (Brushes.Color_Name) as a thickness parameter
+            ///</summary>
+
+            cs.GridLineColor = brush;
+        }
+        public void IsGridVisible(bool IsVisible)
+        {
+            ///<summary>
+            ///This Method Sets the Visibility of the Grid Lines.
+            ///Pass Brush (Brushes.Color_Name) as a thickness parameter
+            ///</summary>
+            cs.IsYGrid = IsVisible;
+            cs.IsXGrid = IsVisible;
+        }
+        public void GridLinePattern(GridLinePatternEnum gridLinePattern)
+        {
+            cs.GridLinePattern = gridLinePattern;
+        }
+        #endregion
         public void PlotThickness(double Thickness)
         {
                 thickness = Thickness;
