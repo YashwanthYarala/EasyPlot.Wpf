@@ -279,6 +279,33 @@ namespace EasyPlot
         {
                 thickness = Thickness;
         }
+        public void Frameless(bool IsFrameless)
+        {
+            if (IsFrameless)
+            {
+                tbTitle.Visibility = Visibility.Collapsed;
+                tbXLabel.Visibility = Visibility.Collapsed;
+                tbYLabel.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                tbTitle.Visibility = Visibility.Visible;
+                tbXLabel.Visibility = Visibility.Visible;
+                tbYLabel.Visibility = Visibility.Visible;
+            }
+
+        }
+        public void SetAxisLimits(double xmin,double xmax,double ymin,double ymax)
+        {
+            xmin0 = xmin; xmax0 = xmax;
+            ymin0 = ymin; ymax0 = ymax;
+
+            cs.XMin = xmin0;
+            cs.YMin = ymin0;
+            cs.XMax = xmax0;
+            cs.Ymax = ymax0;
+
+        }
         #endregion
 
         public class Plot:WpfPlot
