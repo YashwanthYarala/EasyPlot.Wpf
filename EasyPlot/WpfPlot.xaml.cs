@@ -22,15 +22,16 @@ namespace EasyPlot
     /// </summary>
     public partial class WpfPlot : UserControl
     {
+       
         private Point startpoint = new Point();
         private Point endPoint = new Point();
-        private ChartStyle cs { get; set; }
+        protected ChartStyle cs { get; set; }
         private DataCollection dc { get; set; }
         private DataSeries ds { get; set; }
-        private double xmin0 = 0;
-        private double xmax0 = 10;
-        private double ymin0 = -1.5;
-        private double ymax0 = 1.5;
+        protected  static double xmin0 = 0;
+        protected static double xmax0 = 10;
+        protected static double ymin0 = -1.5;
+        protected static double ymax0 = 1.5;
         public List<double> TimePoints { get; set; }
         public List<double> SignalPoints { get; set; }
         public double[] x1 { get; set; }
@@ -44,11 +45,14 @@ namespace EasyPlot
         public double[] yVal { get; set; }
         private double thickness { get; set; } = 1;
         private PlotSeriesEnum plotSeries { get; set; }
+        private bool IsPanningLock { get; set; } = false;
+        private bool IsPanningLock_X { get; set; } = false;
+        private bool IsPanningLock_Y { get;set; } = false;
         public WpfPlot()
         {
             InitializeComponent();
             // GenData genData = new GenData();
-
+           
            
             cs = new ChartStyle();
             ds = new DataSeries();
@@ -73,11 +77,27 @@ namespace EasyPlot
             //  ds = new DataSeries();
             xVal = xvalues;
             yVal = yvalues;
-            for (int i = 0; i < x.Length; i++)
+            try
             {
-                ds.LineSeries.Points.Add(new Point(x[i], y[i]));
+                for (int i = 0; i < x.Length; i++)
+                {
+                    ds.LineSeries.Points.Add(new Point(x[i], y[i]));
+                }
+                dc.DataList.Add(ds);
             }
-            dc.DataList.Add(ds);
+            catch (Exception ex)
+            {
+                if ((xvalues.Length != yvalues.Length))
+                {
+                    throw new Exception("Data Count Not Matching in X and Y");
+                }
+                else if (xvalues == null || yvalues == null)
+                {
+                    throw new Exception("No Data Found To Plot");
+                }
+
+            }
+            
 
         }
         public void AddScatter(double[] xvalues, double[] yvalues)
@@ -85,11 +105,26 @@ namespace EasyPlot
             plotSeries = PlotSeriesEnum.Scatter;
             xVal = xvalues;
             yVal = yvalues;
-            for (int i = 0; i < xvalues.Length; i++)
+            try
             {
-                ds.LineSeries.Points.Add(new Point(xvalues[i], yvalues[i]));
+                for (int i = 0; i < xvalues.Length; i++)
+                {
+                    ds.LineSeries.Points.Add(new Point(xvalues[i], yvalues[i]));
+                }
+                dc.DataList.Add(ds);
+            }catch (Exception ex)
+            {
+                if((xvalues.Length != yvalues.Length))
+                {
+                    throw new Exception("Data Count Not Matching in X and Y");
+                }
+                else if( xvalues == null || yvalues == null)
+                {
+                    throw new Exception("No Data Found To Plot");
+                }
+
             }
-            dc.DataList.Add(ds);
+            
         }
         #endregion
         #region Chart Related
@@ -178,36 +213,48 @@ namespace EasyPlot
                 }
                 else
                 {
-                    tt.X = -(endPoint.X - startpoint.X);
-                    tt.Y = (endPoint.Y - startpoint.Y);
-                    for (int i = 0; i < dc.DataList.Count; i++)
+                    if(!IsPanningLock)
                     {
+                        tt.X = -(endPoint.X - startpoint.X);
+                        tt.Y = (endPoint.Y - startpoint.Y);
+                        for (int i = 0; i < dc.DataList.Count; i++)
+                        {
 
-                        dc.DataList[i].LineSeries.RenderTransform = tt;
+                            dc.DataList[i].LineSeries.RenderTransform = tt;
 
+                        }
+
+                        double dx = 0;
+                        double dy = 0;
+                        double x0 = 0;
+                        double y0 = 0;
+                        double x1 = 1;
+                        double y1 = 1;
+                        //  endPoint = e.GetPosition(chartCanvas);
+                        if(!IsPanningLock_X)
+                        {
+                            dx = (cs.XMax - cs.XMin) * (endPoint.X - startpoint.X) / chartCanvas.Width;
+                        }
+                        if(!IsPanningLock_Y)
+                        {
+                            dy = (cs.Ymax - cs.YMin) * (endPoint.Y - startpoint.Y) / chartCanvas.Height;
+                        }
+                       
+                       
+                       
+                        x0 = cs.XMin - dx / 12;
+                        x1 = cs.XMax - dx / 12;
+                        y0 = cs.YMin + dy / 20;
+                        y1 = cs.Ymax + dy / 20;
+
+                        chartCanvas.Children.Clear();
+                        textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
+                        AddChart(x0, x1, y0, y1);
+
+                        //  chartCanvas.ReleaseMouseCapture();
+                        chartCanvas.Cursor = Cursors.Arrow;
                     }
-
-                    double dx = 0;
-                    double dy = 0;
-                    double x0 = 0;
-                    double y0 = 0;
-                    double x1 = 1;
-                    double y1 = 1;
-                    //  endPoint = e.GetPosition(chartCanvas);
-                    dx = (cs.XMax - cs.XMin) * (endPoint.X - startpoint.X) / chartCanvas.Width;
-                    dy = (cs.Ymax - cs.YMin) * (endPoint.Y - startpoint.Y) / chartCanvas.Height;
-                    dy = 0;
-                    x0 = cs.XMin - dx / 12;
-                    x1 = cs.XMax - dx / 12;
-                    y0 = cs.YMin + dy / 20;
-                    y1 = cs.Ymax + dy / 20;
-
-                    chartCanvas.Children.Clear();
-                    textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
-                    AddChart(x0, x1, y0, y1);
-
-                    //  chartCanvas.ReleaseMouseCapture();
-                    chartCanvas.Cursor = Cursors.Arrow;
+                    
                 }
 
 
@@ -268,22 +315,36 @@ namespace EasyPlot
             }
             else
             {
-                // Panning with mouse left button down
-                dx = (cs.XMax - cs.XMin) * (endPoint.X - startpoint.X) / chartCanvas.Width;
-                dy = (cs.Ymax - cs.YMin) * (endPoint.Y - startpoint.Y) / chartCanvas.Height;
-                //dx and dy allows to set horizontal and vertical panning =>dy = 0 is vertical pan lock and similar to horizontal.
-                dy = 0;
-                x0 = cs.XMin - dx;
-                x1 = cs.XMax - dx;
-                y0 = cs.YMin + dy;
-                y1 = cs.Ymax + dy;
+                if(!IsPanningLock)
+                {
+                    // Panning with mouse left button down
+                    /*
+                    dx = (cs.XMax - cs.XMin) * (endPoint.X - startpoint.X) / chartCanvas.Width;
+                    dy = (cs.Ymax - cs.YMin) * (endPoint.Y - startpoint.Y) / chartCanvas.Height;
+                    */
+                    //dx and dy allows to set horizontal and vertical panning =>dy = 0 is vertical pan lock and similar to horizontal.
+                    dy = 0;
+                    if (!IsPanningLock_X)
+                    {
+                        dx = (cs.XMax - cs.XMin) * (endPoint.X - startpoint.X) / chartCanvas.Width;
+                    }
+                    if (!IsPanningLock_Y)
+                    {
+                        dy = (cs.Ymax - cs.YMin) * (endPoint.Y - startpoint.Y) / chartCanvas.Height;
+                    }
+                    x0 = cs.XMin - dx;
+                    x1 = cs.XMax - dx;
+                    y0 = cs.YMin + dy;
+                    y1 = cs.Ymax + dy;
 
-                chartCanvas.Children.Clear();
-                textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
-                AddChart(x0, x1, y0, y1);
+                    chartCanvas.Children.Clear();
+                    textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
+                    AddChart(x0, x1, y0, y1);
 
-                chartCanvas.ReleaseMouseCapture();
-                chartCanvas.Cursor = Cursors.Arrow;
+                    chartCanvas.ReleaseMouseCapture();
+                    chartCanvas.Cursor = Cursors.Arrow;
+                }
+                
             }
 
 
@@ -373,6 +434,7 @@ namespace EasyPlot
             }
 
         }
+        #region Axis Methods
         public void SetAxisLimits(double xmin,double xmax,double ymin,double ymax)
         {
             xmin0 = xmin; xmax0 = xmax;
@@ -384,15 +446,66 @@ namespace EasyPlot
             cs.Ymax = ymax0;
 
         }
+        public void SetXAxisLimits(double xmin, double xmax)
+        {
+            xmin0 = xmin; xmax0 = xmax;
+            cs.XMin = xmin0; cs.XMax = xmax0;
+        }
+        public void SetYAxisLimits(double ymin, double ymax)
+        {
+            ymin0 = ymin; ymax0 = ymax;
+            cs.YMin = ymin0;cs.Ymax = ymax0;
+        }
+        public void HideAxis(bool HideX, bool HideY)
+        {
+            cs.HideX = HideX; cs.HideY = HideY;
+        }
+        public void HideXAxis(bool HideX)
+        {
+            cs.HideX = HideX;
+        }
+        public void HideYAxis(bool HideY)
+        {
+            cs.HideY = HideY;
+        }
+        public void AutoAxis()
+        {
+            if (xVal != null && yVal != null)
+            {
+                xmin0 = xVal.Min();
+                xmax0 = xVal.Max();
+                ymin0 = yVal.Min();
+                ymax0 = yVal.Max();
+                cs.XMin = xmin0;
+                cs.YMin = ymin0;
+                cs.XMax = xmax0;
+                cs.Ymax = ymax0;
+            }
+        }
+        public void PanningLock(bool isPanning)
+        {
+            IsPanningLock = isPanning;
+        }
+        public void PanningLock_X(bool isPanningX)
+        {
+            IsPanningLock_X = isPanningX;
+        }public void PanningLock_Y(bool isPanningY)
+        {
+            IsPanningLock_Y = isPanningY;
+        }
+        #endregion
         #endregion
 
-        
+
 
     }
+    
     public enum PlotSeriesEnum
     {
         None = 0,
         Scatter = 1,
         PulseGate  = 2,
     }
+    
+   
 }

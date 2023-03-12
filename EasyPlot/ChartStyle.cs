@@ -14,7 +14,7 @@ using System.Windows;
 namespace PlottingWpf
 {
     public class ChartStyle
-    {
+    {   public bool HideX { get; set; } = false; public bool HideY { get; set; } = false;
         private Canvas chartCanvas;
         private double xmin;
         private double xmax;
@@ -231,25 +231,29 @@ namespace PlottingWpf
            }
 
             //create x-tick marks
-            for (int i = xStart; i <= xEnd; i++)
+            if (!HideX)
             {
-                dx = i * xTick;
-                pt = NormalizePoint(new Point(dx, YMin));
-                tick = new Line();
-                tick.Stroke = Brushes.Black;
-                tick.X1 = pt.X;
-                tick.Y1 = pt.Y;
-                tick.X2 = pt.X;
-                tick.Y2 = pt.Y - 5;
-                ChartCanvas.Children.Add(tick);
-                tb = new TextBlock();
-                tb.Text = dx.ToString();
-                tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-                size = tb.DesiredSize;
-                TextCanvas.Children.Add(tb);
-                Canvas.SetLeft(tb, LeftOffset + pt.X - size.Width / 2);
-                Canvas.SetTop(tb, pt.Y + 2 + size.Height / 2);
+                for (int i = xStart; i <= xEnd; i++)
+                {
+                    dx = i * xTick;
+                    pt = NormalizePoint(new Point(dx, YMin));
+                    tick = new Line();
+                    tick.Stroke = Brushes.Black;
+                    tick.X1 = pt.X;
+                    tick.Y1 = pt.Y;
+                    tick.X2 = pt.X;
+                    tick.Y2 = pt.Y - 5;
+                    ChartCanvas.Children.Add(tick);
+                    tb = new TextBlock();
+                    tb.Text = dx.ToString();
+                    tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                    size = tb.DesiredSize;
+                    TextCanvas.Children.Add(tb);
+                    Canvas.SetLeft(tb, LeftOffset + pt.X - size.Width / 2);
+                    Canvas.SetTop(tb, pt.Y + 2 + size.Height / 2);
+                }
             }
+            
             /*
             for(dx = XMin;dx<=XMax;dx+=XTick)
              {
@@ -273,28 +277,32 @@ namespace PlottingWpf
             */
 
             //create y-tick marks
-            for (int i = yStart; i <= yEnd; i++)
+            if(!HideY)
             {
-                dy = i * yTick;
-                pt = NormalizePoint(new Point(XMin, dy));
-                tick = new Line();
-                tick.Stroke = Brushes.Black;
-                tick.X1 = pt.X;
-                tick.Y1 = pt.Y;
-                tick.X2 = pt.X + 5;
-                tick.Y2 = pt.Y;
+                for (int i = yStart; i <= yEnd; i++)
+                {
+                    dy = i * yTick;
+                    pt = NormalizePoint(new Point(XMin, dy));
+                    tick = new Line();
+                    tick.Stroke = Brushes.Black;
+                    tick.X1 = pt.X;
+                    tick.Y1 = pt.Y;
+                    tick.X2 = pt.X + 5;
+                    tick.Y2 = pt.Y;
 
-                ChartCanvas.Children.Add(tick);
-                tb = new TextBlock();
-                string f = dy.ToString();
-                
-                tb.Text = f;
-                tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-                size = tb.DesiredSize;
-                TextCanvas.Children.Add(tb);
-                Canvas.SetRight(tb, ChartCanvas.Width + 10);
-                Canvas.SetTop(tb, pt.Y);
+                    ChartCanvas.Children.Add(tick);
+                    tb = new TextBlock();
+                    string f = dy.ToString();
+
+                    tb.Text = f;
+                    tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                    size = tb.DesiredSize;
+                    TextCanvas.Children.Add(tb);
+                    Canvas.SetRight(tb, ChartCanvas.Width + 10);
+                    Canvas.SetTop(tb, pt.Y);
+                }
             }
+           
             /*
             for (dy = YMin; dy <= Ymax; dy += YTick)
            {

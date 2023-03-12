@@ -27,6 +27,7 @@ namespace EasyPlot
         }
         public PlotViewer(UIElement uIElement)
         {
+            InitializeComponent();
             mainwindow_grid.Children.Add((UIElement)uIElement);
         }
     }
