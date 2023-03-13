@@ -36,8 +36,8 @@ namespace EasyPlot
         protected static double ymax0 = 1.5;
         public List<double> TimePoints { get; set; }
         public List<double> SignalPoints { get; set; }
-        public double[] x1 { get; set; }
-        public double[] y1 { get; set; }
+      //  public double[] x1 { get; set; }
+      //  public double[] y1 { get; set; }
         //
         private double xIncrement { get; set; } = 5;
         private double yIncrement { get; set; } = 0;
@@ -77,6 +77,7 @@ namespace EasyPlot
             cs.XMax = xmax0;
             cs.YMin = ymin0;
             cs.Ymax = ymax0;
+            
         }
         #region Plot Series Types
         public void AddGatePulse(double[] xvalues, double[] yvalues)
@@ -104,11 +105,11 @@ namespace EasyPlot
             {
                 if ((xvalues.Length != yvalues.Length))
                 {
-                    throw new Exception("Data Count Not Matching in X and Y");
+                    throw new Exception("Data Count Not Matching in X and Y " +ex.Message);
                 }
                 else if (xvalues == null || yvalues == null)
                 {
-                    throw new Exception("No Data Found To Plot");
+                    throw new Exception("No Data Found To Plot "+ex.Message);
                 }
 
             }
@@ -132,11 +133,11 @@ namespace EasyPlot
             {
                 if((xvalues.Length != yvalues.Length))
                 {
-                    throw new Exception("Data Count Not Matching in X and Y");
+                    throw new Exception("Data Count Not Matching in X and Y "+ex.Message);
                 }
                 else if( xvalues == null || yvalues == null)
                 {
-                    throw new Exception("No Data Found To Plot");
+                    throw new Exception("No Data Found To Plot " + ex.Message);
                 }
 
             }
@@ -570,11 +571,11 @@ namespace EasyPlot
                             cs.YMin= ylimits[0];
                             cs.Ymax= ylimits[1];
 
-                            xmin0 = xlimits[0];xmax0 = xlimits[1];
-                            ymin0 = ylimits[0]; ymax0 = ylimits[1];
+                          //  xmin0 = xlimits[0];xmax0 = xlimits[1];
+                          //  ymin0 = ylimits[0]; ymax0 = ylimits[1];
                             chartCanvas.Children.Clear();
                             textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
-                            AddChart(xmin0,xmax0, ymin0, ymax0);
+                            AddChart(cs.XMin,cs.XMax,cs.YMin,cs.Ymax);
 
                         }
                         else

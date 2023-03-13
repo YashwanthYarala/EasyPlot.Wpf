@@ -23,8 +23,22 @@ namespace EasyPlot
         public WpfPlot()
         {
             InitializeComponent();
-            Plot = new Plot();
+            try
+            {
+                Plot = new Plot();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message + "Error in Loading Plot ");
+            }
+           
             MainWindow_Grid.Children.Clear();   
+            MainWindow_Grid.Children.Add(Plot);
+        }
+        public WpfPlot(Plot plot)
+        {
+            InitializeComponent();
+            MainWindow_Grid.Children.Clear();
             MainWindow_Grid.Children.Add(Plot);
         }
         
