@@ -50,6 +50,14 @@ namespace EasyPlot
         private bool IsPanningLock { get; set; } = false;
         private bool IsPanningLock_X { get; set; } = false;
         private bool IsPanningLock_Y { get;set; } = false;
+
+        private bool isZoomLock { get; set; } = false;
+        public bool IsZoomLock
+        {
+            get { return isZoomLock; }
+            set { isZoomLock = value; }
+        }
+
         private bool matchAxis { get; set; } = true;
         public event EventHandler<double[]> AxisChangedEventHandler;
 
@@ -185,15 +193,20 @@ namespace EasyPlot
         #region Mouse Events
         private void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            double dx = (e.Delta > 0) ? xIncrement : -xIncrement;
-            double dy = (e.Delta > 0) ? yIncrement : -yIncrement;
-            double x0 = cs.XMin + (cs.XMax - cs.XMin) * dx / chartCanvas.Width;
-            double x1 = cs.XMax - (cs.XMax - cs.XMin) * dx / chartCanvas.Width;
-            double y0 = cs.YMin + (cs.Ymax - cs.YMin) * dy / chartCanvas.Height;
-            double y1 = cs.Ymax - (cs.Ymax - cs.YMin) * dy / chartCanvas.Height;
-            chartCanvas.Children.Clear();
-            textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
-            AddChart(x0, x1, y0, y1);
+            if (!isZoomLock)
+            {
+                double dx = (e.Delta > 0) ? xIncrement : -xIncrement;
+                double dy = (e.Delta > 0) ? yIncrement : -yIncrement;
+                double x0 = cs.XMin + (cs.XMax - cs.XMin) * dx / chartCanvas.Width;
+                double x1 = cs.XMax - (cs.XMax - cs.XMin) * dx / chartCanvas.Width;
+                double y0 = cs.YMin + (cs.Ymax - cs.YMin) * dy / chartCanvas.Height;
+                double y1 = cs.Ymax - (cs.Ymax - cs.YMin) * dy / chartCanvas.Height;
+                chartCanvas.Children.Clear();
+                textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
+                AddChart(x0, x1, y0, y1);
+            }
+           
+            
         }
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -588,6 +601,10 @@ namespace EasyPlot
         }public void PanningLock_Y(bool isPanningY)
         {
             IsPanningLock_Y = isPanningY;
+        }
+        public void ZoomLock(bool isZoomLock)
+        {
+            IsZoomLock = isZoomLock;
         }
         public string YLabel
         {
