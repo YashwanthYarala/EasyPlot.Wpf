@@ -3,6 +3,8 @@ using PlottingWpf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -48,6 +50,10 @@ namespace EasyPlot
         private bool IsPanningLock { get; set; } = false;
         private bool IsPanningLock_X { get; set; } = false;
         private bool IsPanningLock_Y { get;set; } = false;
+        private bool matchAxis { get; set; } = true;
+        public event EventHandler<double[]> AxisChangedEventHandler;
+
+
         public WpfPlot()
         {
             InitializeComponent();
@@ -83,6 +89,7 @@ namespace EasyPlot
                 {
                     ds.LineSeries.Points.Add(new Point(x[i], y[i]));
                 }
+                dc = new DataCollection();
                 dc.DataList.Add(ds);
             }
             catch (Exception ex)
@@ -111,6 +118,7 @@ namespace EasyPlot
                 {
                     ds.LineSeries.Points.Add(new Point(xvalues[i], yvalues[i]));
                 }
+                dc = new DataCollection();
                 dc.DataList.Add(ds);
             }catch (Exception ex)
             {
@@ -135,6 +143,9 @@ namespace EasyPlot
             cs.XMax = xmax;
             cs.YMin = ymin;
             cs.Ymax = ymax;
+           
+            
+           
             cs.GridLinePattern = GridLinePatternEnum.Dot;
             cs.GridLineColor = Brushes.Black;
             cs.AddChartstyle(tbTitle, tbXLabel, tbYLabel);
@@ -143,6 +154,11 @@ namespace EasyPlot
             ds = new DataSeries();
             ds.LineThickness = thickness;
             ds.LineColor = Brushes.Blue;
+            double[] limits_ = { xmin, xmax, ymin, ymax };
+            if (matchAxis)
+            {
+                AxisChangedEventHandler?.Invoke(this, limits_);
+            }
             switch (plotSeries)
             {
                 case PlotSeriesEnum.Scatter:
@@ -221,7 +237,7 @@ namespace EasyPlot
                         {
 
                             dc.DataList[i].LineSeries.RenderTransform = tt;
-
+                             
                         }
 
                         double dx = 0;
@@ -360,52 +376,58 @@ namespace EasyPlot
         #endregion
         //UI functions
         #region UI Methods
-                 #region Grid Methods
+        #region Grid Methods
+        ///<summary>
+        ///This Method Sets The Grid Lines to Plot
+        ///</summary>
         public void IsGrid(bool IsXgrid,bool IsYgrid)
         {
-            ///<summary>
-            ///This Method Sets The Grid Lines to Plot
-            ///</summary>
+            
             cs.IsYGrid = IsYgrid;
             cs.IsXGrid = IsXgrid;
         }
+        ///<summary>
+        ///This Method Sets The Vetical-Grid Lines to Plot
+        ///</summary>
         public void IsXGrid(bool IsXgrid)
         {
-            ///<summary>
-            ///This Method Sets The Vetical-Grid Lines to Plot
-            ///</summary>
+            
             cs.IsXGrid = IsXgrid;
         }
+        ///<summary>
+        ///This Method Sets The Horizontal-Grid Lines to Plot
+        ///</summary>
         public void IsYGrid(bool IsYgrid)
         {
-            ///<summary>
-            ///This Method Sets The Horizontal-Grid Lines to Plot
-            ///</summary>
+           
             cs.IsYGrid = IsYgrid;
         }
+        ///<summary>
+        ///This Method Sets the Thickness of the Grid Lines
+        ///Pass Double Value as a thickness parameter
+        ///</summary>
         public void GridLineThickness(double thickness)
         {
-            ///<summary>
-            ///This Method Sets the Thickness of the Grid Lines
-            ///Pass Double Value as a thickness parameter
-            ///</summary>
+           
             cs.GridLine.StrokeThickness = thickness;
         }
+        ///<summary>
+        ///This Method Sets the Color of the Grid Lines
+        ///Pass Brush (Brushes.Color_Name) as a thickness parameter
+        ///</summary>
         public void GridLineColor(Brush brush)
         {
-            ///<summary>
-            ///This Method Sets the Color of the Grid Lines
-            ///Pass Brush (Brushes.Color_Name) as a thickness parameter
-            ///</summary>
+           
 
             cs.GridLineColor = brush;
         }
+        ///<summary>
+        ///This Method Sets the Visibility of the Grid Lines.
+        ///Pass Brush (Brushes.Color_Name) as a thickness parameter
+        ///</summary>
         public void IsGridVisible(bool IsVisible)
         {
-            ///<summary>
-            ///This Method Sets the Visibility of the Grid Lines.
-            ///Pass Brush (Brushes.Color_Name) as a thickness parameter
-            ///</summary>
+            
             cs.IsYGrid = IsVisible;
             cs.IsXGrid = IsVisible;
         }
@@ -482,6 +504,80 @@ namespace EasyPlot
                 cs.Ymax = ymax0;
             }
         }
+        public bool MatchAxis
+        {
+            get { return matchAxis; }
+            set { matchAxis = value; }
+        }
+        public double[] GetXlimits()
+        {
+            double[] limits = new double[2];
+            limits[0] = cs.XMin;
+            limits[1] = cs.XMax;
+            return limits;
+        }
+        public double[] GetYlimits()
+        {
+            double[] limits = new double[2];
+            limits[0] = cs.YMin;
+            limits[1] = cs.Ymax;
+            return limits;
+        }
+        public class AxisLimitsEventArgs : EventArgs
+        {
+            public double x1 { get; set; }
+            public double y1 { get; set; }
+            public double x2 { get; set; }
+            public double y2 { get; set; }
+        }
+        public delegate void AxisLimitsChangedEventHandler(object source, AxisLimitsEventArgs e);
+        public event AxisLimitsChangedEventHandler AxisLimitsChanged;
+        public void OnAxisChanged()
+        {
+            AxisLimitsChanged?.Invoke(this, new AxisLimitsEventArgs { x1 = xmin0,x2 = xmax0,y1 = ymin0,y2 = ymax0 });
+        }
+        public void MatchAxisLimits(double[] xlimits, double[] ylimits)
+        {
+            if (matchAxis)
+            {
+                Exception ex  = null;
+                try
+                {
+                    if(xlimits == null || ylimits == null)
+                    {
+                        ex = new Exception("Either of the limits or both the limits are null");
+
+                    }
+                    else
+                    {
+                        if (xlimits.Length == 2 && ylimits.Length == 2)
+                        {
+                            cs.XMax = xlimits[1];
+                            cs.XMin = xlimits[0];
+                            cs.YMin= ylimits[0];
+                            cs.Ymax= ylimits[1];
+
+                            xmin0 = xlimits[0];xmax0 = xlimits[1];
+                            ymin0 = ylimits[0]; ymax0 = ylimits[1];
+                            chartCanvas.Children.Clear();
+                            textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
+                            AddChart(xmin0,xmax0, ymin0, ymax0);
+
+                        }
+                        else
+                        {
+                            ex = new Exception("Out of Index ");
+                        }
+                    }
+                    
+                }
+                catch  
+                {
+                    MessageBox.Show(ex.Message,"MatchAxisLimits",MessageBoxButton.OK,MessageBoxImage.Error);
+                }
+               
+            }
+        }
         public void PanningLock(bool isPanning)
         {
             IsPanningLock = isPanning;
@@ -493,13 +589,38 @@ namespace EasyPlot
         {
             IsPanningLock_Y = isPanningY;
         }
+        public string YLabel
+        {
+            get { return cs.YLabel; }
+            set { cs.YLabel = value; }
+        }   
+        public string XLabel
+        {
+            get { return cs.XLabel; }
+            set { cs.XLabel = value; }
+        }
+        public string Title
+        {
+            get { return cs.Title; }
+            set
+            {
+                cs.Title = value;
+            }
+        }
+        public void SetPlotLabels(string title,string xlabel,string ylabel)
+        {
+            Title = title;
+            XLabel = xlabel;
+            YLabel = ylabel;
+        }
         #endregion
         #endregion
-
+        
+        
 
 
     }
-    
+
     public enum PlotSeriesEnum
     {
         None = 0,
