@@ -20,6 +20,7 @@ namespace PlottingWpf
         private double xmax;
         private double ymin;
         private double ymax;
+        public Rectangle chartRect = new Rectangle();
         public Canvas ChartCanvas
         {
             get { return chartCanvas; }
@@ -150,7 +151,8 @@ namespace PlottingWpf
             Canvas.SetBottom(ChartCanvas, BottomOffset);
             ChartCanvas.Width = Math.Abs(TextCanvas.Width-LeftOffset-RightOffset);
             chartCanvas.Height = Math.Abs(TextCanvas.Height-BottomOffset-size.Height/2);
-            System.Windows.Shapes.Rectangle chartRect = new System.Windows.Shapes.Rectangle();
+            //  System.Windows.Shapes.Rectangle chartRect = new System.Windows.Shapes.Rectangle();
+            chartRect = new Rectangle();
             chartRect.Stroke = Brushes.Black;
             chartRect.Width = ChartCanvas.Width;
             chartRect.Height = ChartCanvas.Height;

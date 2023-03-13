@@ -57,9 +57,15 @@ namespace EasyPlot
             get { return isZoomLock; }
             set { isZoomLock = value; }
         }
-
+        
         private bool matchAxis { get; set; } = true;
         public event EventHandler<double[]> AxisChangedEventHandler;
+        private bool isRectangle { get; set; } = true;
+        public bool IsReactangle
+        {
+            get { return isRectangle; }
+            set { isRectangle = value; }
+        }
 
 
         public Plot()
@@ -394,6 +400,7 @@ namespace EasyPlot
         ///<summary>
         ///This Method Sets The Grid Lines to Plot
         ///</summary>
+        
         public void IsGrid(bool IsXgrid,bool IsYgrid)
         {
             
@@ -403,6 +410,7 @@ namespace EasyPlot
         ///<summary>
         ///This Method Sets The Vetical-Grid Lines to Plot
         ///</summary>
+        
         public void IsXGrid(bool IsXgrid)
         {
             
@@ -444,6 +452,39 @@ namespace EasyPlot
             
             cs.IsYGrid = IsVisible;
             cs.IsXGrid = IsVisible;
+        }
+        public void  HideLabels(bool isXVisible,bool isYVisible)
+        {
+            if(isXVisible)
+            {
+                tbXLabel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                tbXLabel.Visibility = Visibility.Collapsed;
+            }
+            if(isYVisible)
+            {
+                tbYLabel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                tbYLabel.Visibility= Visibility.Collapsed;
+            }
+            
+        }
+        public void SetRectangle(bool isRectangle)
+        {
+
+            if (isRectangle)
+            {
+                cs.chartRect.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                cs.chartRect.Visibility = Visibility.Hidden;
+            }
+               
         }
         public void GridLinePattern(GridLinePatternEnum gridLinePattern)
         {
@@ -537,6 +578,7 @@ namespace EasyPlot
             limits[1] = cs.Ymax;
             return limits;
         }
+
         public class AxisLimitsEventArgs : EventArgs
         {
             public double x1 { get; set; }
