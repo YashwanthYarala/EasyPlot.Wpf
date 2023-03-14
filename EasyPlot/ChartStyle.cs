@@ -11,7 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Shapes;
 using System.Windows;
 
-namespace PlottingWpf
+namespace EasyPlot
 {
     public class ChartStyle
     {   public bool HideX { get; set; } = false; public bool HideY { get; set; } = false;
