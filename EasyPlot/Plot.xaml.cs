@@ -20,7 +20,7 @@ using System.Windows.Shapes;
 namespace EasyPlot
 {
     /// <summary>
-    /// Interaction logic for WpfPlot.xaml
+    /// Interaction logic for Plot User Control.
     /// </summary>
     public partial class Plot : UserControl
     {
