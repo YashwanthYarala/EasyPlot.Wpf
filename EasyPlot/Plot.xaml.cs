@@ -51,6 +51,14 @@ namespace EasyPlot
         private bool IsPanningLock_X { get; set; } = false;
         private bool IsPanningLock_Y { get;set; } = false;
 
+        //panning Limits
+        private double x_left { get; set; } = double.NegativeInfinity;
+        private double x_right { get; set; } = double.PositiveInfinity;
+        private double y_down { get; set; } = double.NegativeInfinity;
+        private double y_up { get; set; } = double.PositiveInfinity;    
+
+        //
+
         private bool isZoomLock { get; set; } = false;
         public bool IsZoomLock
         {
@@ -153,7 +161,29 @@ namespace EasyPlot
         #region Chart Related
         private void AddChart(double xmin, double xmax, double ymin, double ymax)
         {
+            //Panning Limits Validation.
+           
+            if (xmin < x_left)
+            {
+                xmin = x_left;
+            }
+            if(xmax>x_right)
+            {
+                xmax = x_right;
+            }
+            if(ymin < y_down)
+            {
+                ymin = y_down;
+            }
+            if (ymax > y_up)
+            {
+                ymax = y_up;
+            }
+            
+            //Panning validation Ends Here.
+
             cs.Title = Title_;
+
             cs.XMin = xmin;
             cs.XMax = xmax;
             cs.YMin = ymin;
@@ -545,6 +575,13 @@ namespace EasyPlot
         {
             cs.HideY = HideY;
         }
+        public void SetTicks(double Xtick_min, double Xtick_max, double Ytick_min, double Ytick_max)
+        {
+            cs.Xtick_min = Xtick_min;
+            cs.Xtick_max = Xtick_max;
+            cs.Ytick_max = Ytick_max;
+            cs.Ytick_min = Ytick_min;
+        }
         public void AutoAxis()
         {
             if (xVal != null && yVal != null)
@@ -633,6 +670,13 @@ namespace EasyPlot
                 }
                
             }
+        }
+        public void SetPanningLimits(double X_left,double X_right,double Y_down,double Y_up)
+        {
+            x_left = X_left;
+            x_right = X_right;
+            y_down = Y_down;
+            y_up = y_up;
         }
         public void PanningLock(bool isPanning)
         {

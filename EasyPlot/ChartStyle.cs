@@ -50,6 +50,51 @@ namespace PlottingWpf
             get { return ymax; }
             set { ymax = value; }
         }
+
+        //
+        private double xtick_min { get; set; } = 0.5;
+        private double xtick_max { get; set; } = 5;
+
+        private double ytick_min { get; set; } = 0.5;
+        private double ytick_max { get; set; } = 10;
+
+
+        public double Xtick_min
+        {
+            get { return xtick_min; }
+
+            set { xtick_min = value; }
+        }
+        public double Xtick_max
+        {
+            get { return xtick_max; }
+            set { xtick_max = value; }
+        }
+        public double Ytick_min
+        {
+            get
+            {
+                return ytick_min;
+            }
+            set
+            {
+                ytick_min = value;
+            }
+        }
+        public double Ytick_max
+        {
+            get
+            {
+                return ytick_max;
+            }
+            set
+            {
+                ytick_max = value;
+            }
+        }
+
+        //
+
         #region GridStyles
         public string Title { get; set; }  = "Title";
         public string XLabel { get; set; } = "X Axis";
@@ -164,9 +209,29 @@ namespace PlottingWpf
             if (YMin != Ymax)
                 yScale = ChartCanvas.Height / (Ymax - YMin);
             xSpacing = optimalXSpacing / xScale;
+            
             xTick = OptimalSpacing(xSpacing);
             ySpacing = optimalYSpacing / yScale;
             yTick = OptimalSpacing(ySpacing);
+            //tick validation
+            if (xTick < xtick_min)
+            {
+                xTick = xtick_min;
+            }
+            else if (xTick > xtick_max)
+            {
+                xTick = xtick_max;
+            }
+            if (yTick < ytick_min)
+            {
+                yTick = ytick_min;
+            }
+            else if (yTick > ytick_max)
+            {
+                yTick = ytick_max;
+            }
+
+            //
             xStart = (int)Math.Ceiling(XMin / xTick);
             xEnd = (int)Math.Floor(XMax / xTick);
             yStart = (int)Math.Ceiling(YMin / yTick);
