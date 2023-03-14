@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 
 
-namespace PlottingLibrary01
+namespace EasyPlot
 {
     public class GenData
     {

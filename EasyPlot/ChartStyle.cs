@@ -14,12 +14,13 @@ using System.Windows;
 namespace PlottingWpf
 {
     public class ChartStyle
-    {
+    {   public bool HideX { get; set; } = false; public bool HideY { get; set; } = false;
         private Canvas chartCanvas;
         private double xmin;
         private double xmax;
         private double ymin;
         private double ymax;
+        public Rectangle chartRect = new Rectangle();
         public Canvas ChartCanvas
         {
             get { return chartCanvas; }
@@ -49,6 +50,51 @@ namespace PlottingWpf
             get { return ymax; }
             set { ymax = value; }
         }
+
+        //
+        private double xtick_min { get; set; } = 0.5;
+        private double xtick_max { get; set; } = 5;
+
+        private double ytick_min { get; set; } = 0.5;
+        private double ytick_max { get; set; } = 10;
+
+
+        public double Xtick_min
+        {
+            get { return xtick_min; }
+
+            set { xtick_min = value; }
+        }
+        public double Xtick_max
+        {
+            get { return xtick_max; }
+            set { xtick_max = value; }
+        }
+        public double Ytick_min
+        {
+            get
+            {
+                return ytick_min;
+            }
+            set
+            {
+                ytick_min = value;
+            }
+        }
+        public double Ytick_max
+        {
+            get
+            {
+                return ytick_max;
+            }
+            set
+            {
+                ytick_max = value;
+            }
+        }
+
+        //
+
         #region GridStyles
         public string Title { get; set; }  = "Title";
         public string XLabel { get; set; } = "X Axis";
@@ -150,7 +196,8 @@ namespace PlottingWpf
             Canvas.SetBottom(ChartCanvas, BottomOffset);
             ChartCanvas.Width = Math.Abs(TextCanvas.Width-LeftOffset-RightOffset);
             chartCanvas.Height = Math.Abs(TextCanvas.Height-BottomOffset-size.Height/2);
-            System.Windows.Shapes.Rectangle chartRect = new System.Windows.Shapes.Rectangle();
+            //  System.Windows.Shapes.Rectangle chartRect = new System.Windows.Shapes.Rectangle();
+            chartRect = new Rectangle();
             chartRect.Stroke = Brushes.Black;
             chartRect.Width = ChartCanvas.Width;
             chartRect.Height = ChartCanvas.Height;
@@ -162,9 +209,29 @@ namespace PlottingWpf
             if (YMin != Ymax)
                 yScale = ChartCanvas.Height / (Ymax - YMin);
             xSpacing = optimalXSpacing / xScale;
+            
             xTick = OptimalSpacing(xSpacing);
             ySpacing = optimalYSpacing / yScale;
             yTick = OptimalSpacing(ySpacing);
+            //tick validation
+            if (xTick < xtick_min)
+            {
+                xTick = xtick_min;
+            }
+            else if (xTick > xtick_max)
+            {
+                xTick = xtick_max;
+            }
+            if (yTick < ytick_min)
+            {
+                yTick = ytick_min;
+            }
+            else if (yTick > ytick_max)
+            {
+                yTick = ytick_max;
+            }
+
+            //
             xStart = (int)Math.Ceiling(XMin / xTick);
             xEnd = (int)Math.Floor(XMax / xTick);
             yStart = (int)Math.Ceiling(YMin / yTick);
@@ -231,25 +298,29 @@ namespace PlottingWpf
            }
 
             //create x-tick marks
-            for (int i = xStart; i <= xEnd; i++)
+            if (!HideX)
             {
-                dx = i * xTick;
-                pt = NormalizePoint(new Point(dx, YMin));
-                tick = new Line();
-                tick.Stroke = Brushes.Black;
-                tick.X1 = pt.X;
-                tick.Y1 = pt.Y;
-                tick.X2 = pt.X;
-                tick.Y2 = pt.Y - 5;
-                ChartCanvas.Children.Add(tick);
-                tb = new TextBlock();
-                tb.Text = dx.ToString();
-                tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-                size = tb.DesiredSize;
-                TextCanvas.Children.Add(tb);
-                Canvas.SetLeft(tb, LeftOffset + pt.X - size.Width / 2);
-                Canvas.SetTop(tb, pt.Y + 2 + size.Height / 2);
+                for (int i = xStart; i <= xEnd; i++)
+                {
+                    dx = i * xTick;
+                    pt = NormalizePoint(new Point(dx, YMin));
+                    tick = new Line();
+                    tick.Stroke = Brushes.Black;
+                    tick.X1 = pt.X;
+                    tick.Y1 = pt.Y;
+                    tick.X2 = pt.X;
+                    tick.Y2 = pt.Y - 5;
+                    ChartCanvas.Children.Add(tick);
+                    tb = new TextBlock();
+                    tb.Text = dx.ToString();
+                    tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                    size = tb.DesiredSize;
+                    TextCanvas.Children.Add(tb);
+                    Canvas.SetLeft(tb, LeftOffset + pt.X - size.Width / 2);
+                    Canvas.SetTop(tb, pt.Y + 2 + size.Height / 2);
+                }
             }
+            
             /*
             for(dx = XMin;dx<=XMax;dx+=XTick)
              {
@@ -273,28 +344,32 @@ namespace PlottingWpf
             */
 
             //create y-tick marks
-            for (int i = yStart; i <= yEnd; i++)
+            if(!HideY)
             {
-                dy = i * yTick;
-                pt = NormalizePoint(new Point(XMin, dy));
-                tick = new Line();
-                tick.Stroke = Brushes.Black;
-                tick.X1 = pt.X;
-                tick.Y1 = pt.Y;
-                tick.X2 = pt.X + 5;
-                tick.Y2 = pt.Y;
+                for (int i = yStart; i <= yEnd; i++)
+                {
+                    dy = i * yTick;
+                    pt = NormalizePoint(new Point(XMin, dy));
+                    tick = new Line();
+                    tick.Stroke = Brushes.Black;
+                    tick.X1 = pt.X;
+                    tick.Y1 = pt.Y;
+                    tick.X2 = pt.X + 5;
+                    tick.Y2 = pt.Y;
 
-                ChartCanvas.Children.Add(tick);
-                tb = new TextBlock();
-                string f = dy.ToString();
-                
-                tb.Text = f;
-                tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
-                size = tb.DesiredSize;
-                TextCanvas.Children.Add(tb);
-                Canvas.SetRight(tb, ChartCanvas.Width + 10);
-                Canvas.SetTop(tb, pt.Y);
+                    ChartCanvas.Children.Add(tick);
+                    tb = new TextBlock();
+                    string f = dy.ToString();
+
+                    tb.Text = f;
+                    tb.Measure(new Size(Double.PositiveInfinity, Double.PositiveInfinity));
+                    size = tb.DesiredSize;
+                    TextCanvas.Children.Add(tb);
+                    Canvas.SetRight(tb, ChartCanvas.Width + 10);
+                    Canvas.SetTop(tb, pt.Y);
+                }
             }
+           
             /*
             for (dy = YMin; dy <= Ymax; dy += YTick)
            {
