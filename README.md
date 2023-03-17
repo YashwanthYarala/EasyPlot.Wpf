@@ -5,9 +5,8 @@ Docuentation will be released Soon.
 <Html>
   <h1>Hello</h1>
   <button></button>
-</Html>
- <?xml version="1.0"?>
-<doc>
+  <doc>
+     <?xml version="1.0"?>
     <assembly>
         <name>EasyPlot</name>
     </assembly>
@@ -319,3 +318,6 @@ Docuentation will be released Soon.
 </doc>
 
   
+
+</Html>
+
