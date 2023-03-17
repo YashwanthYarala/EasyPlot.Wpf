@@ -24,7 +24,7 @@ namespace EasyPlot
     /// </summary>
     public partial class Plot : UserControl
     {
-       
+        Coordinates coordinates = new Coordinates();
         private Point startpoint = new Point();
         private Point endPoint = new Point();
         private ChartStyle cs { get; set; }
@@ -55,7 +55,39 @@ namespace EasyPlot
         private double x_left { get; set; } = double.NegativeInfinity;
         private double x_right { get; set; } = double.PositiveInfinity;
         private double y_down { get; set; } = double.NegativeInfinity;
-        private double y_up { get; set; } = double.PositiveInfinity;    
+        private double y_up { get; set; } = double.PositiveInfinity;
+
+        //
+
+        //
+        private bool isReadData { get; set; } = true;
+        public bool IsReadData { get { return isReadData; }
+            set { isReadData = value; }
+        }
+
+        private double x_Coordinate { get; set; }
+        private double y_Coordinate { get; set; }
+
+        /// <summary>
+        /// Get the X-Coordinate of Pointer up to 4 Decimal Places.
+        /// Alternate:Use GetCoordinates(Int no_of_decimalPlaces).X
+        /// </summary>
+        public double X_Coordinate
+        {
+            get {  return Math.Round(x_Coordinate,4); }
+           
+        }
+
+
+        /// <summary>
+        /// Get the Y-Coordinate of the pointer up to 4 Decimal Places.
+        /// Alternate:Use GetCoordinates(Int no_of_decimalPlaces).X
+        /// </summary>
+        public double Y_Coordinate
+        {
+            get { return Math.Round(y_Coordinate,4); }
+        }
+        
 
         //
 
@@ -235,13 +267,16 @@ namespace EasyPlot
                     AddGatePulse(xVal, yVal);
                     break;
             }
+           
 
-            
             dc.AddLines(cs);
+
+           
         }
         private void chartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             tbDate.Text = DateTime.Now.ToShortDateString();
+           
             textCanvas.Width = chartGrid.ActualWidth;
             textCanvas.Height = chartGrid.ActualHeight;
             chartCanvas.Children.Clear();
@@ -272,11 +307,21 @@ namespace EasyPlot
             if (!chartCanvas.IsMouseCaptured)
             {
                 startpoint = e.GetPosition(chartCanvas);
+              //  chartCanvas.Cursor = Cursors.Cross;
                 chartCanvas.CaptureMouse();
+                chartCanvas.Cursor = Cursors.Hand;
+
+               
             }
         }
         private void OnMouseMove(object sender, MouseEventArgs e)
-        {
+        {   
+            chartCanvas.ToolTip = null;
+          
+
+            
+
+           
             if (chartCanvas.IsMouseCaptured)
             {
 
@@ -284,6 +329,7 @@ namespace EasyPlot
                 endPoint = e.GetPosition(chartCanvas);
                 if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
+                    
                     if (rubberBand == null)
                     {
                         rubberBand = new Rectangle();
@@ -303,6 +349,8 @@ namespace EasyPlot
                 {
                     if(!IsPanningLock)
                     {
+                        chartCanvas.Cursor = Cursors.Hand;
+                        
                         tt.X = -(endPoint.X - startpoint.X);
                         tt.Y = (endPoint.Y - startpoint.Y);
                         for (int i = 0; i < dc.DataList.Count; i++)
@@ -340,7 +388,7 @@ namespace EasyPlot
                         AddChart(x0, x1, y0, y1);
 
                         //  chartCanvas.ReleaseMouseCapture();
-                        chartCanvas.Cursor = Cursors.Arrow;
+                     //   chartCanvas.Cursor = Cursors.Arrow;
                     }
                     
                 }
@@ -348,6 +396,58 @@ namespace EasyPlot
 
 
             }
+            else
+            {
+                chartCanvas.Cursor = Cursors.Cross;
+                //  chartCanvasToolTip.Cursor = Cursors.Cross;
+
+                
+                if(isReadData)
+                {
+                    endPoint = e.GetPosition(chartCanvas);
+                    if (Math.Abs(endPoint.X - startpoint.X) > SystemParameters.MinimumHorizontalDragDistance && Math.Abs(endPoint.Y - startpoint.Y) > SystemParameters.MinimumVerticalDragDistance)
+                    {
+                        double x, y;
+                        for (int i = 0; i < dc.DataList.Count; i++)
+                        {
+                            TranslateTransform tt = new TranslateTransform();
+                            tt.X = endPoint.X - startpoint.X;
+                            tt.Y = GetInterpolatedYValue(dc.DataList[i], endPoint.X) - GetInterpolatedYValue(dc.DataList[i], startpoint.X);
+
+                            x = endPoint.X;
+                            y = endPoint.Y;
+                            x = cs.XMin + x * (cs.XMax - cs.XMin) / chartCanvas.Width;
+                            //   y = GetInterpolatedYValue(dc.DataList[i], endPoint.X);
+                            y = cs.YMin + (chartCanvas.Height - y) * (cs.Ymax - cs.YMin) / chartCanvas.Height;
+
+                            //x_Coordinate = Math.Round(x, 4);
+                            //y_Coordinate = Math.Round(y, 4);
+                            x_Coordinate = x;
+                            y_Coordinate = y;
+                        }
+
+                    }
+                }
+               
+
+            }
+        }
+        private double GetInterpolatedYValue(DataSeries data, double x)
+        {
+            double result = double.NaN;
+            for (int i = 1; i < data.LineSeries.Points.Count; i++)
+            {
+                double x1 = data.LineSeries.Points[i - 1].X;
+                double x2 = data.LineSeries.Points[i].X;
+                if (x >= x1 && x < x2)
+                {
+                    double y1 = data.LineSeries.Points[i - 1].Y;
+                    double y2 = data.LineSeries.Points[i].Y;
+                    result = y1 + (y2 - y1) * (x - x1) / (x2 - x1);
+
+                }
+            }
+            return result;
         }
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
@@ -355,6 +455,7 @@ namespace EasyPlot
         }
         private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            chartCanvas.Cursor = Cursors.Arrow;
             double dx = 0;
             double dy = 0;
             double x0 = 0;
@@ -399,7 +500,7 @@ namespace EasyPlot
                     rubberBand = null;
                     chartCanvas.ReleaseMouseCapture();
                 }
-
+                
             }
             else
             {
@@ -864,10 +965,22 @@ namespace EasyPlot
             XLabel = xlabel;
             YLabel = ylabel;
         }
+        public Coordinates GetCoordinates(int Round_to = 4)
+        {
+            coordinates = new Coordinates();
+            coordinates.X = Math.Round(x_Coordinate,Round_to);
+            coordinates.Y = Math.Round(Y_Coordinate,Round_to);
+            return coordinates;
+        }
+       
         #endregion
         #endregion
         
-        
+        public class Coordinates
+        {
+            public double X { get; set; }
+            public double Y { get;set; }
+        }
 
 
     }

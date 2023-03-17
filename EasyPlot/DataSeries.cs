@@ -43,7 +43,9 @@ namespace EasyPlot
                     LineSeries.Stroke = Brushes.Transparent;
                     break;
             }
-            public enum LinePatternEnum
+        }
+
+         public enum LinePatternEnum
         {
             Solid = 1,
             Dash = 2,
@@ -54,7 +56,6 @@ namespace EasyPlot
     }
         
 
-    }
+ }
 
     
-}
