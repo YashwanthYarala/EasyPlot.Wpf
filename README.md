@@ -3,7 +3,7 @@
 # A plotting Library for Plotting Interractive 2D Charts.
 Docuentation will be released Soon.
 <Html>
-  <h1>Hello</h1>
+  <h1 style="color:Tomato;" >Hello</h1>
   <button></button>
   <doc>
      <?xml version="1.0"?>
