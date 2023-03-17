@@ -45,14 +45,17 @@ namespace EasyPlot
             }
         }
 
+         public enum LinePatternEnum
+        {
+            Solid = 1,
+            Dash = 2,
+            Dot = 3,
+            DashDot = 4,
+            None = 5
+        }
     }
+        
 
-    public enum LinePatternEnum
-    {
-        Solid = 1,
-        Dash  = 2,
-        Dot = 3,
-        DashDot = 4,
-        None = 5
-    }
-}
+ }
+
+    

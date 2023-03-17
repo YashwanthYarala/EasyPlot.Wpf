@@ -4,6 +4,20 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageId>EasyPlot.WPF</PackageId>
+    <Title>A Easy Wpf Plotting Library (.Net-6.0 framework)</Title>
+    <Authors>Yashwanth Yarala</Authors>
+    <Company>Easy Libraries</Company>
+    <Description>This is Plotting Library Based on WPF and .Net 6.0 frame work.
+Easy to Use library.
+</Description>
+    <PackAsTool>false</PackAsTool>
+    <Version>1.0.0</Version>
+    <AnalysisLevel>6.0</AnalysisLevel>
+    <RepositoryUrl>https://github.com/YashwanthYarala/EasyPlot.Wpf</RepositoryUrl>
+    <RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
 </Project>
