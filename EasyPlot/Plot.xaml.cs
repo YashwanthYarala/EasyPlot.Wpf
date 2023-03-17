@@ -965,6 +965,13 @@ namespace EasyPlot
             XLabel = xlabel;
             YLabel = ylabel;
         }
+
+        /// <summary>
+        /// This Method Return Coordinates of the pointer .
+        /// Pass Integer value to round off the decimal positions.
+        /// </summary>
+        /// <param name="Round_to"></param>
+        /// <returns></returns>
         public Coordinates GetCoordinates(int Round_to = 4)
         {
             coordinates = new Coordinates();
