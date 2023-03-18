@@ -7,11 +7,10 @@
 *  ***EasyPlot.Wpf Has Different types of plots like Scatter,GatePulse(Step)...***     
 * ***EasyPlot.Wpf has Zooming ,Panning ,CroassHairs ,Matching Axes Feature.***
 * ***Customizable Plot Line Patterns, Grid Line Patterns,Colors,Legend.***
-<Html>
-    <H2>Getting Started</H2>
-</Html>
 
-## `#RRGGBB **Repo Contents** `
+## **Getting Started**
+
+* **[Repo Contents](/Documentation/RepoContent.md)**
 * **[Properties and Methods](/Documentation/props_methods.md)**
 * **[Examples](/Documentation/examples.md)**
 
