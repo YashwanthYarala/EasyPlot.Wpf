@@ -8,7 +8,7 @@
 * ***EasyPlot.Wpf has Zooming ,Panning ,CroassHairs ,Matching Axes Feature.***
 * ***Customizable Plot Line Patterns, Grid Line Patterns,Colors,Legend.***
 
-## **Getting Started**
+## **Getting Started** :rocket:
 
 * **[Repo Contents](/Documentation/RepoContent.md)**
 * **[Properties and Methods](/Documentation/props_methods.md)**
