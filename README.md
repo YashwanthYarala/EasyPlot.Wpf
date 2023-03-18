@@ -11,7 +11,7 @@
     <H2>Getting Started</H2>
 </Html>
 
-## `#RRGGBB`  **Repo Contents** 
+## `#RRGGBB **Repo Contents** `
 * **[Properties and Methods](/Documentation/props_methods.md)**
 * **[Examples](/Documentation/examples.md)**
 
