@@ -58,7 +58,7 @@ namespace EasyPlot
         private double ytick_min { get; set; } = 0.5;
         private double ytick_max { get; set; } = 10;
 
-
+        public Canvas CrossHairCanvas { get; set; }
         public double Xtick_min
         {
             get { return xtick_min; }
@@ -203,7 +203,8 @@ namespace EasyPlot
             chartRect.Width = ChartCanvas.Width;
             chartRect.Height = ChartCanvas.Height;
             ChartCanvas.Children.Add(chartRect);
-
+            
+            
             //2d interactive
             if (XMin != XMax)
                 xScale = ChartCanvas.Width / (XMax - XMin);

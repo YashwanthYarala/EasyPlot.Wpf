@@ -34,8 +34,10 @@
 
         </Grid>
         <Canvas Margin="2" Name="textCanvas" Grid.Column="1" Grid.Row="2" ClipToBounds="True">
-            <Canvas Name="chartCanvas" ClipToBounds="True" Background="Transparent" MouseLeftButtonDown="OnMouseLeftButtonDown" MouseMove="OnMouseMove"  MouseLeftButtonUp="OnMouseLeftButtonUp" MouseRightButtonDown="OnMouseRightButtonDown" MouseWheel="OnMouseWheel" MouseLeave="OnMouseLeave" >
-                
+            <Canvas Name="chartCanvas" ClipToBounds="True" Background="Transparent" MouseLeftButtonDown="OnMouseLeftButtonDown" MouseMove="OnMouseMove"  MouseLeftButtonUp="OnMouseLeftButtonUp" MouseRightButtonDown="OnMouseRightButtonDown" MouseWheel="OnMouseWheel" MouseLeave="OnMouseLeave" SizeChanged="chartCanvas_SizeChanged" >
+                <Canvas x:Name="crosshairCanvas" Background="Transparent" ClipToBounds="True" >
+                    
+                </Canvas>
             </Canvas>
         </Canvas>
     </Grid>

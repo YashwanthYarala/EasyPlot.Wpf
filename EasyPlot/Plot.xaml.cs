@@ -162,10 +162,11 @@ namespace EasyPlot
            
            
             cs = new ChartStyle();
-            ds = new DataSeries();
+            ds = new DataSeries(); 
             dc = new DataCollection();
             cs.ChartCanvas = chartCanvas;
             cs.TextCanvas = textCanvas;
+            cs.CrossHairCanvas = crosshairCanvas;
             cs.XMin = xmin0;
             cs.XMax = xmax0;
             cs.YMin = ymin0;
@@ -378,10 +379,7 @@ namespace EasyPlot
         private void OnMouseMove(object sender, MouseEventArgs e)
         {   
             chartCanvas.ToolTip = null;
-
-
             
-           
             if (chartCanvas.IsMouseCaptured)
             {
 
@@ -492,46 +490,52 @@ namespace EasyPlot
                             //y_Coordinate = Math.Round(y, 4);
                             x_Coordinate = x;
                             y_Coordinate = y;
+                            VerticalCrossHair = new CrossHair();
+                            HorizontalCrossHair = new CrossHair();
+                            
 
-                            if (isCrossHair)
-                            {
-                                VerticalCrossHair = new CrossHair();
-                                HorizontalCrossHair = new CrossHair();
-
-                                //Vertical CrossHair
-                              //  VerticalCrossHair.Line.X1 = x;
-                                VerticalCrossHair.Line.X1 = cs.NormalizePoint(new Point(x, y)).X;
-                              //  VerticalCrossHair.Line.X2 = x;
-                                VerticalCrossHair.Line.X2 = cs.NormalizePoint(new Point(x,y)).X;
-
-                                //VerticalCrossHair.Line.Y1 = cs.YMin;
-                                //VerticalCrossHair.Line.Y2 = cs.Ymax;
-                                VerticalCrossHair.Line.Y1 = cs.NormalizePoint(new Point(x,cs.YMin)).Y;
-                                VerticalCrossHair.Line.Y2 = cs.NormalizePoint(new Point(x, cs.Ymax)).Y;
-
-                                VerticalCrossHair.AddLinePattern();
-
-                                AddChart(cs.XMin, cs.XMax, cs.YMin, cs.Ymax);
-
-                                chartCanvas.Children.Add(VerticalCrossHair.Line);
-
-                                //Horizontal CrossHair
-                                HorizontalCrossHair.Line.X1 = cs.XMin;
-                                HorizontalCrossHair.Line.X2 = cs.XMax;
-                                HorizontalCrossHair.Line.Y1 = y;
-                                HorizontalCrossHair.Line.Y2 = y;
-
-
-
-                            }
                         }
-                        /// CrossHairs.
+                        
                         
 
 
                     }
+                    if (isCrossHair)
+                    {
+
+
+                        //Vertical CrossHair
+                        //  VerticalCrossHair.Line.X1 = x;
+                        VerticalCrossHair.Line.X1 = cs.NormalizePoint(new Point(x_Coordinate, y_Coordinate)).X;
+                        //  VerticalCrossHair.Line.X2 = x;
+                        VerticalCrossHair.Line.X2 = cs.NormalizePoint(new Point(x_Coordinate, y_Coordinate)).X;
+
+                        //VerticalCrossHair.Line.Y1 = cs.YMin;
+                        //VerticalCrossHair.Line.Y2 = cs.Ymax;
+                        VerticalCrossHair.Line.Y1 = cs.NormalizePoint(new Point(x_Coordinate, cs.YMin)).Y;
+                        VerticalCrossHair.Line.Y2 = cs.NormalizePoint(new Point(x_Coordinate, cs.Ymax)).Y;
+
+                        VerticalCrossHair.AddLinePattern();
+
+                        //chartCanvas.Children.Add(VerticalCrossHair.Line);
+                        // crosshairCanvas.Children.Clear();
+                        //  crosshairCanvas.Children.Add(VerticalCrossHair.Line);
+                        //Horizontal CrossHair
+                        //HorizontalCrossHair.Line.X1 = cs.XMin;
+                        //HorizontalCrossHair.Line.X2 = cs.XMax;
+                        //HorizontalCrossHair.Line.Y1 = y;
+                        //HorizontalCrossHair.Line.Y2 = y;
+
+                        chartCanvas.Children.Clear();
+                        //   crosshairCanvas.Children.Add(VerticalCrossHair.Line);
+                        textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
+                        AddChart(cs.XMin, cs.XMax, cs.YMin, cs.Ymax);
+                        chartCanvas.Children.Add(VerticalCrossHair.Line);
+
+                    }
+                    /// CrossHairs.
                 }
-               
+
 
             }
         }
@@ -1092,7 +1096,10 @@ namespace EasyPlot
             public double Y { get;set; }
         }
 
+        private void chartCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
 
+        }
     }
     /// <summary>
     /// This Enum is to switch between different type of plots.
