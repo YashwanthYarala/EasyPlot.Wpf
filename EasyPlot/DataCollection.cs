@@ -31,6 +31,7 @@ namespace EasyPlot
                 for (int i = 0; i < s.LineSeries.Points.Count; i++)
                 {
                     s.LineSeries.Points[i] =cs.NormalizePoint(s.LineSeries.Points[i]);
+                    s.Symbols.AddSymbol(cs.ChartCanvas,s.LineSeries.Points[i]);
 
                 }
                 cs.ChartCanvas.Children.Add(s.LineSeries);

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:EasyPlot"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Margin="10">
+    <Grid Margin="10" x:Name="plotGrid">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>

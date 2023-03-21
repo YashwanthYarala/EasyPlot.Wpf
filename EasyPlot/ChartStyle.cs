@@ -213,6 +213,7 @@ namespace EasyPlot
             xTick = OptimalSpacing(xSpacing);
             ySpacing = optimalYSpacing / yScale;
             yTick = OptimalSpacing(ySpacing);
+            /*
             //tick validation
             if (xTick < xtick_min)
             {
@@ -230,7 +231,7 @@ namespace EasyPlot
             {
                 yTick = ytick_max;
             }
-
+            */
             //
             xStart = (int)Math.Ceiling(XMin / xTick);
             xEnd = (int)Math.Floor(XMax / xTick);

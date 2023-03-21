@@ -91,6 +91,27 @@ namespace EasyPlot
 
         //
 
+        /*
+        private double height { get { return plotGrid.ActualHeight; } set { plotGrid.Height = value; } }
+        /// <summary>
+        /// Gets and Gets the Height of the plot .
+        /// </summary>
+        public double Height_
+        {
+            get { return height; }
+            set { height = value; }
+        }
+
+        private double width { get { return plotGrid.ActualWidth; } set { plotGrid.Width = value; } }
+        /// <summary>
+        /// Gets and Gets the Height of the plot .
+        /// </summary>
+        public double Width_
+        {
+            get { return width; }
+            set { width = value; }
+        }
+        */
         private bool isZoomLock { get; set; } = false;
 
         /// <summary>
@@ -114,7 +135,19 @@ namespace EasyPlot
             get { return isRectangle; }
             set { isRectangle = value; }
         }
+        //
 
+        /// <summary>
+        /// 
+        /// </summary>
+        
+        public Symbols.SymbolTypeEnum SymbolType { get{ return symboltype; } set { symboltype = value; } }
+        private Symbols.SymbolTypeEnum symboltype {  get; set; }     
+        private Brush symbolColor { get; set; }
+        public Brush SymbolColor { get { return symbolColor; } set { symbolColor = value; } }
+
+
+        //
 
         public Plot()
         {
@@ -131,6 +164,7 @@ namespace EasyPlot
             cs.XMax = xmax0;
             cs.YMin = ymin0;
             cs.Ymax = ymax0;
+            symboltype = Symbols.SymbolTypeEnum.None;
             
         }
         #region Plot Series Types
@@ -158,6 +192,15 @@ namespace EasyPlot
                 for (int i = 0; i < x.Length; i++)
                 {
                     ds.LineSeries.Points.Add(new Point(x[i], y[i]));
+                }
+                ds.Symbols.SymbolType = symboltype;
+                if (SymbolColor != null)
+                {
+                    ds.Symbols.FillColor = SymbolColor;
+                }
+                else
+                {
+                    ds.Symbols.FillColor = ds.LineColor;
                 }
                 dc = new DataCollection();
                 dc.DataList.Add(ds);
@@ -194,7 +237,19 @@ namespace EasyPlot
                 for (int i = 0; i < xvalues.Length; i++)
                 {
                     ds.LineSeries.Points.Add(new Point(xvalues[i], yvalues[i]));
+                    
                 }
+                ds.Symbols.SymbolType = symboltype;
+                if(SymbolColor !=  null)
+                {
+                    ds.Symbols.FillColor = SymbolColor;
+                }
+                else
+                {
+                    ds.Symbols.FillColor = ds.LineColor;
+                }
+               
+
                 dc = new DataCollection();
                 dc.DataList.Add(ds);
             }catch (Exception ex)
@@ -378,10 +433,10 @@ namespace EasyPlot
                        
                        
                        
-                        x0 = cs.XMin - dx / 12;
-                        x1 = cs.XMax - dx / 12;
-                        y0 = cs.YMin + dy / 20;
-                        y1 = cs.Ymax + dy / 20;
+                        x0 = cs.XMin - dx / 5;
+                        x1 = cs.XMax - dx / 5;
+                        y0 = cs.YMin + dy / 10;
+                        y1 = cs.Ymax + dy / 10;
 
                         chartCanvas.Children.Clear();
                         textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);

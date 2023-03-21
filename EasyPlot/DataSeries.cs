@@ -12,13 +12,14 @@ namespace EasyPlot
     {
         public Polyline LineSeries = new Polyline();
         public Brush LineColor { get; set; }
-        public double LineThickness { get; set; } = 0.5;
+        public double LineThickness { get; set; } = 1;
         public string SeriesName { get; set; } = "DefaultName";
         public LinePatternEnum LinePattern { get; set; }
-        //public Symbols Symbols{get;set;}
+        public Symbols Symbols{get;set;}
 
         public DataSeries() {
             LineColor = Brushes.Black;
+            Symbols = new Symbols();
             
         }
         public void AddLinePattern()

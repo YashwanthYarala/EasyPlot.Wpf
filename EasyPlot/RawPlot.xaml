@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:EasyPlot"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid x:Name="MainWIndow_Grid">
+    <Grid x:Name="MainWIndow_Grid" SizeChanged="MainWIndow_Grid_SizeChanged">
             
     </Grid>
 </UserControl>
