@@ -114,6 +114,7 @@ namespace EasyPlot
         #endregion
         public void AddChartstyle(TextBlock tbTitle,TextBlock tbXLabel,TextBlock tbYLabel)
         {
+            chartCanvas.Children.Clear();
            System.Windows.Point pt  = new System.Windows.Point();
             Line tick = new Line();
             double offset = 0;

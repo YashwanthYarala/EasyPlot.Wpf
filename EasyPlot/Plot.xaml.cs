@@ -146,6 +146,12 @@ namespace EasyPlot
         private Brush symbolColor { get; set; }
         public Brush SymbolColor { get { return symbolColor; } set { symbolColor = value; } }
 
+        //CrossHairs
+        private bool isCrossHair { get; set; } = false;
+        public bool IsCrossHair { get { return isCrossHair; } set { isCrossHair = value; } }
+        private CrossHair VerticalCrossHair { get; set; }
+        private CrossHair HorizontalCrossHair { get; set; }
+
 
         //
 
@@ -194,9 +200,9 @@ namespace EasyPlot
                     ds.LineSeries.Points.Add(new Point(x[i], y[i]));
                 }
                 ds.Symbols.SymbolType = symboltype;
-                if (SymbolColor != null)
+                if (symbolColor != null)
                 {
-                    ds.Symbols.FillColor = SymbolColor;
+                    ds.Symbols.FillColor = symbolColor;
                 }
                 else
                 {
@@ -240,9 +246,9 @@ namespace EasyPlot
                     
                 }
                 ds.Symbols.SymbolType = symboltype;
-                if(SymbolColor !=  null)
+                if(symbolColor !=  null)
                 {
-                    ds.Symbols.FillColor = SymbolColor;
+                    ds.Symbols.FillColor = symbolColor;
                 }
                 else
                 {
@@ -372,10 +378,9 @@ namespace EasyPlot
         private void OnMouseMove(object sender, MouseEventArgs e)
         {   
             chartCanvas.ToolTip = null;
-          
+
 
             
-
            
             if (chartCanvas.IsMouseCaptured)
             {
@@ -456,8 +461,16 @@ namespace EasyPlot
                 chartCanvas.Cursor = Cursors.Cross;
                 //  chartCanvasToolTip.Cursor = Cursors.Cross;
 
-                
-                if(isReadData)
+                if (isCrossHair)
+                {
+                    VerticalCrossHair = new CrossHair();
+                    HorizontalCrossHair = new CrossHair();
+
+
+                }
+
+
+                if (isReadData)
                 {
                     endPoint = e.GetPosition(chartCanvas);
                     if (Math.Abs(endPoint.X - startpoint.X) > SystemParameters.MinimumHorizontalDragDistance && Math.Abs(endPoint.Y - startpoint.Y) > SystemParameters.MinimumVerticalDragDistance)
@@ -479,7 +492,42 @@ namespace EasyPlot
                             //y_Coordinate = Math.Round(y, 4);
                             x_Coordinate = x;
                             y_Coordinate = y;
+
+                            if (isCrossHair)
+                            {
+                                VerticalCrossHair = new CrossHair();
+                                HorizontalCrossHair = new CrossHair();
+
+                                //Vertical CrossHair
+                              //  VerticalCrossHair.Line.X1 = x;
+                                VerticalCrossHair.Line.X1 = cs.NormalizePoint(new Point(x, y)).X;
+                              //  VerticalCrossHair.Line.X2 = x;
+                                VerticalCrossHair.Line.X2 = cs.NormalizePoint(new Point(x,y)).X;
+
+                                //VerticalCrossHair.Line.Y1 = cs.YMin;
+                                //VerticalCrossHair.Line.Y2 = cs.Ymax;
+                                VerticalCrossHair.Line.Y1 = cs.NormalizePoint(new Point(x,cs.YMin)).Y;
+                                VerticalCrossHair.Line.Y2 = cs.NormalizePoint(new Point(x, cs.Ymax)).Y;
+
+                                VerticalCrossHair.AddLinePattern();
+
+                                AddChart(cs.XMin, cs.XMax, cs.YMin, cs.Ymax);
+
+                                chartCanvas.Children.Add(VerticalCrossHair.Line);
+
+                                //Horizontal CrossHair
+                                HorizontalCrossHair.Line.X1 = cs.XMin;
+                                HorizontalCrossHair.Line.X2 = cs.XMax;
+                                HorizontalCrossHair.Line.Y1 = y;
+                                HorizontalCrossHair.Line.Y2 = y;
+
+
+
+                            }
                         }
+                        /// CrossHairs.
+                        
+
 
                     }
                 }
