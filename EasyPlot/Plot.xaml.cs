@@ -78,6 +78,8 @@ namespace EasyPlot
            
         }
 
+        private static int LockCount = 0;
+
 
         /// <summary>
         /// Get the Y-Coordinate of the pointer up to 4 Decimal Places.
@@ -152,9 +154,9 @@ namespace EasyPlot
         private CrossHair VerticalCrossHair { get; set; }
         private CrossHair HorizontalCrossHair { get; set; }
 
-
+        private Dictionary<double,double> XYDict { get; set; }
         //
-
+        private SmartLoader smartLoader { get; set; } 
         public Plot()
         {
             InitializeComponent();
@@ -172,6 +174,8 @@ namespace EasyPlot
             cs.YMin = ymin0;
             cs.Ymax = ymax0;
             symboltype = Symbols.SymbolTypeEnum.None;
+            smartLoader = new SmartLoader();
+            XYDict  = new Dictionary<double, double>();
             
         }
         #region Plot Series Types
@@ -243,6 +247,7 @@ namespace EasyPlot
             {
                 for (int i = 0; i < xvalues.Length; i++)
                 {
+
                     ds.LineSeries.Points.Add(new Point(xvalues[i], yvalues[i]));
                     
                 }
@@ -320,16 +325,36 @@ namespace EasyPlot
             {
                 AxisChangedEventHandler?.Invoke(this, limits_);
             }
+            if(LockCount == 0)
+            { 
+                XYDict.Clear();
+                for(int i = 0; i < xVal.Length; i++)
+                {
+                    XYDict.Add(xVal[i], yVal[i]);
+                }
+                LockCount ++;
+            }
+            smartLoader = new SmartLoader();
+            var val = smartLoader.GetValues(cs, XYDict);
+            //switch (plotSeries)
+            //{
+            //    case PlotSeriesEnum.Scatter:
+            //        AddScatter(xVal, yVal);
+            //        break;
+            //    case PlotSeriesEnum.PulseGate:
+            //        AddGatePulse(xVal, yVal);
+            //        break;
+            //}
             switch (plotSeries)
             {
                 case PlotSeriesEnum.Scatter:
-                    AddScatter(xVal, yVal);
+                    AddScatter(val.XAxis.ToArray(), val.YAxis.ToArray());
                     break;
                 case PlotSeriesEnum.PulseGate:
-                    AddGatePulse(xVal, yVal);
+                    AddGatePulse(val.XAxis.ToArray(), val.YAxis.ToArray());
                     break;
             }
-           
+
 
             dc.AddLines(cs);
 
@@ -343,6 +368,7 @@ namespace EasyPlot
             textCanvas.Height = chartGrid.ActualHeight;
             chartCanvas.Children.Clear();
             textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
+            
             AddChart(cs.XMin, cs.XMax, cs.YMin, cs.Ymax);
         }
         #endregion
