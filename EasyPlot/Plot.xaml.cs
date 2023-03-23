@@ -24,145 +24,187 @@ namespace EasyPlot
     /// </summary>
     public partial class Plot : UserControl
     {
-        Coordinates coordinates = new Coordinates();
-        private Point startpoint = new Point();
-        private Point endPoint = new Point();
-        private ChartStyle cs { get; set; }
-        private DataCollection dc { get; set; }
-        private DataSeries ds { get; set; }
-        protected  static double xmin0 = 0;
-        protected static double xmax0 = 10;
-        protected static double ymin0 = -1.5;
-        protected static double ymax0 = 1.5;
-      //  public List<double> TimePoints { get; set; }
-      //  public List<double> SignalPoints { get; set; }
-      //  public double[] x1 { get; set; }
-      //  public double[] y1 { get; set; }
-        //
-        private double xIncrement { get; set; } = 5;
-        private double yIncrement { get; set; } = 0;
-        public string Title_ { get; set; }
-        private Shape rubberBand = null;
-        private static double[] xVal { get; set; }
-        private static double[] yVal { get; set; }
-        private double thickness { get; set; } = 1;
-        private PlotSeriesEnum plotSeries { get; set; }
-        private bool IsPanningLock { get; set; } = false;
-        private bool IsPanningLock_X { get; set; } = false;
-        private bool IsPanningLock_Y { get;set; } = false;
+        #region Parameters
 
-        //panning Limits
-        private double x_left { get; set; } = double.NegativeInfinity;
-        private double x_right { get; set; } = double.PositiveInfinity;
-        private double y_down { get; set; } = double.NegativeInfinity;
-        private double y_up { get; set; } = double.PositiveInfinity;
+            #region class Objects
+            private ChartStyle cs { get; set; }
+                private DataCollection dc { get; set; }
+                private DataSeries ds { get; set; }
+                private SmartLoader smartLoader { get; set; }
+                private PlotSeriesEnum plotSeries { get; set; }
+            #endregion
 
-        //
+            #region CrossHairs
+            private CrossHair VerticalCrossHair { get; set; } = new CrossHair();
+                private CrossHair HorizontalCrossHair { get; set; } = new CrossHair();
 
-        //
-        private bool isReadData { get; set; } = true;
-        public bool IsReadData { get { return isReadData; }
-            set { isReadData = value; }
-        }
+                private bool isCrossHair { get; set; } = false;
+                public bool IsCrossHair { get { return isCrossHair; } set { isCrossHair = value; } }
+            #endregion
 
-        private double x_Coordinate { get; set; }
-        private double y_Coordinate { get; set; }
+            #region Labels
 
-        /// <summary>
-        /// Get the X-Coordinate of Pointer up to 4 Decimal Places.
-        /// Alternate:Use GetCoordinates(Int no_of_decimalPlaces).X
-        /// </summary>
-        public double X_Coordinate
-        {
-            get {  return Math.Round(x_Coordinate,4); }
-           
-        }
+                public string Title_ { get; set; }
 
-        private  int LockCount = 0;
+                /// <summary>
+                /// Sets or Gets the Y Axis Label (String)
+                /// </summary>
+                public string YLabel
+                {
+                    get { return cs.YLabel; }
+                    set { cs.YLabel = value; }
+                }
 
-        public string Name { get; set; } = "";
+                /// <summary>
+                ///  Sets or Gets the Y Axis Label (String)
+                /// </summary>
+                public string XLabel
+                {
+                    get { return cs.XLabel; }
+                    set { cs.XLabel = value; }
+                }
+                /// <summary>
+                /// Sets or Gets the Title (String)
+                /// </summary>
+                public string Title
+                {
+                    get { return cs.Title; }
+                    set
+                    {
+                        cs.Title = value;
+                    }
+                }
+            #endregion
 
-        /// <summary>
-        /// Get the Y-Coordinate of the pointer up to 4 Decimal Places.
-        /// Alternate:Use GetCoordinates(Int no_of_decimalPlaces).X
-        /// </summary>
-        public double Y_Coordinate
-        {
-            get { return Math.Round(y_Coordinate,4); }
-        }
-        
-        
+            #region Limits
 
-        //
+                #region canvas limits
+                    protected static double xmin0 = 0;
+                    protected static double xmax0 = 10;
+                    protected static double ymin0 = -1.5;
+                    protected static double ymax0 = 1.5;
+                #endregion
 
-        /*
-        private double height { get { return plotGrid.ActualHeight; } set { plotGrid.Height = value; } }
-        /// <summary>
-        /// Gets and Gets the Height of the plot .
-        /// </summary>
-        public double Height_
-        {
-            get { return height; }
-            set { height = value; }
-        }
+                #region panning limits
+                    //panning Limits
+                    private double x_left { get; set; } = double.NegativeInfinity;
+                    private double x_right { get; set; } = double.PositiveInfinity;
+                    private double y_down { get; set; } = double.NegativeInfinity;
+                    private double y_up { get; set; } = double.PositiveInfinity;
 
-        private double width { get { return plotGrid.ActualWidth; } set { plotGrid.Width = value; } }
-        /// <summary>
-        /// Gets and Gets the Height of the plot .
-        /// </summary>
-        public double Width_
-        {
-            get { return width; }
-            set { width = value; }
-        }
-        */
-        private bool isZoomLock { get; set; } = false;
+            #endregion
 
-        /// <summary>
-        /// Sets ot Get the ZoomLock of the Plot.
-        /// </summary>
-        public bool IsZoomLock
-        {
-            get { return isZoomLock; }
-            set { isZoomLock = value; }
-        }
-        
-        private bool matchAxis { get; set; } = true;
 
-        /// <summary>
-        ///Event Hander that triggers when the axis of the plot are changed. 
-        /// </summary>
-        public event EventHandler<double[]> AxisChangedEventHandler;
-        private bool isRectangle { get; set; } = true;
-        public bool IsReactangle
-        {
-            get { return isRectangle; }
-            set { isRectangle = value; }
-        }
-        //
 
-        /// <summary>
-        /// 
-        /// </summary>
-        
-        public Symbols.SymbolTypeEnum SymbolType { get{ return symboltype; } set { symboltype = value; } }
-        private Symbols.SymbolTypeEnum symboltype {  get; set; }     
-        private Brush symbolColor { get; set; }
-        public Brush SymbolColor { get { return symbolColor; } set { symbolColor = value; } }
 
-        //CrossHairs
-        private bool isCrossHair { get; set; } = false;
-        public bool IsCrossHair { get { return isCrossHair; } set { isCrossHair = value; } }
-        private CrossHair VerticalCrossHair { get; set; } = new CrossHair();
-        private CrossHair HorizontalCrossHair { get; set; } = new CrossHair();
+            #endregion
 
-        private Dictionary<double,double> XYDict { get; set; }
-        //
-        private SmartLoader smartLoader { get; set; } 
-         
-        private double[] xvalues_smart { get; set; } = new double[0];
-        private double[] yvalues_smart { get; set; } = new double[0];
-        
+            #region Coordinates
+                Coordinates coordinates = new Coordinates();
+                private double x_Coordinate { get; set; }
+                private double y_Coordinate { get; set; }
+
+                /// <summary>
+                /// Get the X-Coordinate of Pointer up to 4 Decimal Places.
+                /// Alternate:Use GetCoordinates(Int no_of_decimalPlaces).X
+                /// </summary>
+                public double X_Coordinate
+                {
+                    get { return Math.Round(x_Coordinate, 4); }
+
+                }
+
+                private int LockCount = 0;
+
+                public string Name { get; set; } = "";
+
+            /// <summary>
+            /// Get the Y-Coordinate of the pointer up to 4 Decimal Places.
+            /// Alternate:Use GetCoordinates(Int no_of_decimalPlaces).X
+            /// </summary>
+            public double Y_Coordinate
+            {
+                get { return Math.Round(y_Coordinate, 4); }
+            }
+
+            #endregion
+
+            #region Shapes and Points
+                private Point startpoint = new Point();
+                private Point endPoint = new Point();
+                private Shape rubberBand = null;
+                private bool isRectangle { get; set; } = true;
+                public bool IsReactangle
+                {
+                    get { return isRectangle; }
+                    set { isRectangle = value; }
+                }
+                 private double thickness { get; set; } = 1;
+            #endregion
+
+            #region Graph XY Data
+            private Dictionary<double, double> XYDict { get; set; }
+                private double[] xvalues_smart { get; set; } = new double[0];
+                private double[] yvalues_smart { get; set; } = new double[0];
+                private static double[] xVal { get; set; }
+                private static double[] yVal { get; set; }
+            #endregion
+
+            #region Zooming
+            private bool isZoomLock { get; set; } = false;
+                /// <summary>
+                /// Sets ot Get the ZoomLock of the Plot.
+                /// </summary>
+                public bool IsZoomLock
+                {
+                    get { return isZoomLock; }
+                    set { isZoomLock = value; }
+                }
+                #endregion
+
+            #region Panning
+                private bool IsPanningLock { get; set; } = false;
+                    private bool IsPanningLock_X { get; set; } = false;
+                    private bool IsPanningLock_Y { get; set; } = false;
+            #endregion
+
+            #region Symbols
+                public Symbols.SymbolTypeEnum SymbolType { get { return symboltype; } set { symboltype = value; } }
+                private Symbols.SymbolTypeEnum symboltype { get; set; }
+                private Brush symbolColor { get; set; }
+                public Brush SymbolColor { get { return symbolColor; } set { symbolColor = value; } }
+            #endregion
+
+            #region Reading Data
+                private bool isReadData { get; set; } = true;
+                public bool IsReadData
+                {
+                    get { return isReadData; }
+                    set { isReadData = value; }
+                }
+            #endregion
+
+            #region Mouse Events
+                #region MatchAxis
+                private bool matchAxis { get; set; } = true;
+
+                /// <summary>
+                ///Event Hander that triggers when the axis of the plot are changed. 
+                /// </summary>
+                public event EventHandler<double[]> AxisChangedEventHandler;
+            #endregion
+
+                #region Mouse Wheel Events
+                    private double xIncrement { get; set; } = 5;
+                    private double yIncrement { get; set; } = 0;
+        #endregion
+        #endregion
+
+        #endregion
+
+
+        int test = 0;
+
         public Plot()
         {
             InitializeComponent();
@@ -1061,35 +1103,7 @@ namespace EasyPlot
             IsZoomLock = isZoomLock;
         }
 
-        /// <summary>
-        /// Sets or Gets the Y Axis Label (String)
-        /// </summary>
-        public string YLabel
-        {
-            get { return cs.YLabel; }
-            set { cs.YLabel = value; }
-        }
-
-        /// <summary>
-        ///  Sets or Gets the Y Axis Label (String)
-        /// </summary>
-        public string XLabel
-        {
-            get { return cs.XLabel; }
-            set { cs.XLabel = value; }
-        }
-        /// <summary>
-        /// Sets or Gets the Title (String)
-        /// </summary>
-        public string Title
-        {
-            get { return cs.Title; }
-            set
-            {
-                cs.Title = value;
-            }
-        }
-
+       
         /// <summary>
         /// This Method Sets Title ,X-label,Y-Label of the Plot
         /// </summary>
