@@ -78,8 +78,9 @@ namespace EasyPlot
            
         }
 
-        private static int LockCount = 0;
+        private  int LockCount = 0;
 
+        public string Name { get; set; } = "";
 
         /// <summary>
         /// Get the Y-Coordinate of the pointer up to 4 Decimal Places.
@@ -152,8 +153,8 @@ namespace EasyPlot
         //CrossHairs
         private bool isCrossHair { get; set; } = false;
         public bool IsCrossHair { get { return isCrossHair; } set { isCrossHair = value; } }
-        private CrossHair VerticalCrossHair { get; set; }
-        private CrossHair HorizontalCrossHair { get; set; }
+        private CrossHair VerticalCrossHair { get; set; } = new CrossHair();
+        private CrossHair HorizontalCrossHair { get; set; } = new CrossHair();
 
         private Dictionary<double,double> XYDict { get; set; }
         //
@@ -494,13 +495,7 @@ namespace EasyPlot
                 chartCanvas.Cursor = Cursors.Cross;
                 //  chartCanvasToolTip.Cursor = Cursors.Cross;
 
-                if (isCrossHair)
-                {
-                    VerticalCrossHair = new CrossHair();
-                    HorizontalCrossHair = new CrossHair();
-
-
-                }
+               
 
 
                 if (isReadData)
