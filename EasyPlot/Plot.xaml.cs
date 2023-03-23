@@ -43,8 +43,8 @@ namespace EasyPlot
         private double yIncrement { get; set; } = 0;
         public string Title_ { get; set; }
         private Shape rubberBand = null;
-        private double[] xVal { get; set; }
-        private double[] yVal { get; set; }
+        private static double[] xVal { get; set; }
+        private static double[] yVal { get; set; }
         private double thickness { get; set; } = 1;
         private PlotSeriesEnum plotSeries { get; set; }
         private bool IsPanningLock { get; set; } = false;
@@ -89,6 +89,7 @@ namespace EasyPlot
         {
             get { return Math.Round(y_Coordinate,4); }
         }
+        
         
 
         //
@@ -157,6 +158,10 @@ namespace EasyPlot
         private Dictionary<double,double> XYDict { get; set; }
         //
         private SmartLoader smartLoader { get; set; } 
+         
+        private double[] xvalues_smart { get; set; } = new double[0];
+        private double[] yvalues_smart { get; set; } = new double[0];
+        
         public Plot()
         {
             InitializeComponent();
@@ -325,17 +330,21 @@ namespace EasyPlot
             {
                 AxisChangedEventHandler?.Invoke(this, limits_);
             }
-            if(LockCount == 0)
-            { 
-                XYDict.Clear();
-                for(int i = 0; i < xVal.Length; i++)
-                {
-                    XYDict.Add(xVal[i], yVal[i]);
-                }
-                LockCount ++;
+
+            if (LockCount == 0)
+            {
+
+                //XYDict.Clear();
+                //for (int i = 0; i < xVal.Length; i++)
+                //{
+                //    XYDict.Add(xVal[i], yVal[i]);
+                //}
+                xvalues_smart = xVal;
+                yvalues_smart = yVal;
+                LockCount++;
             }
             smartLoader = new SmartLoader();
-            var val = smartLoader.GetValues(cs, XYDict);
+            var val = smartLoader.GetValues(cs, xvalues_smart,yvalues_smart);
             //switch (plotSeries)
             //{
             //    case PlotSeriesEnum.Scatter:

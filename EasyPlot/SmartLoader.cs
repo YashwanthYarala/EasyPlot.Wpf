@@ -13,18 +13,25 @@ namespace EasyPlot
         {
             
         }
-        public Values GetValues(ChartStyle cs,  Dictionary<double,double> DataPairs)
+        public Values GetValues(ChartStyle cs, double[] xval, double[] yval)
         {
             Values values = new Values();
-
-            foreach (var pair in DataPairs)
+            for(int i = 0; i < xval.Length; i++)
             {
-                if(pair.Key<=cs.XMax && pair.Key >= cs.XMin)
+                if (xval[i] <= cs.XMax+20 && xval[i] >= cs.XMin-20)
                 {
-                    values.XAxis.Add(pair.Key);
-                    values.YAxis.Add(pair.Value);
+                    values.XAxis.Add(xval[i]);
+                    values.YAxis.Add(yval[i]);
                 }
             }
+            //foreach (var pair in DataPairs)
+            //{
+            //    if(pair.Key<=cs.XMax && pair.Key >= cs.XMin)
+            //    {
+            //        values.XAxis.Add(pair.Key);
+            //        values.YAxis.Add(pair.Value);
+            //    }
+            //}
             
             return values;
         }
