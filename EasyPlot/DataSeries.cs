@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace EasyPlot
@@ -15,12 +10,13 @@ namespace EasyPlot
         public double LineThickness { get; set; } = 1;
         public string SeriesName { get; set; } = "DefaultName";
         public LinePatternEnum LinePattern { get; set; }
-        public Symbols Symbols{get;set;}
+        public Symbols Symbols { get; set; }
 
-        public DataSeries() {
+        public DataSeries()
+        {
             LineColor = Brushes.Black;
             Symbols = new Symbols();
-            
+
         }
         public void AddLinePattern()
         {
@@ -46,7 +42,7 @@ namespace EasyPlot
             }
         }
 
-         public enum LinePatternEnum
+        public enum LinePatternEnum
         {
             Solid = 1,
             Dash = 2,
@@ -55,8 +51,8 @@ namespace EasyPlot
             None = 5
         }
     }
-        
 
- }
 
-    
+}
+
+

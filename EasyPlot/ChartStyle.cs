@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-
-using System.Windows.Media;
-using System.Windows.Controls;
-using System.Windows.Shapes;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace EasyPlot
 {
     public class ChartStyle
-    {   public bool HideX { get; set; } = false; public bool HideY { get; set; } = false;
+    {
+        public bool HideX { get; set; } = false; public bool HideY { get; set; } = false;
         private Canvas chartCanvas;
         private double xmin;
         private double xmax;
@@ -96,29 +90,29 @@ namespace EasyPlot
         //
 
         #region GridStyles
-        public string Title { get; set; }  = "Title";
+        public string Title { get; set; } = "Title";
         public string XLabel { get; set; } = "X Axis";
         public string YLabel { get; set; } = "Y Axis";
-        public Canvas TextCanvas { get; set; } 
+        public Canvas TextCanvas { get; set; }
         public bool IsXGrid { get; set; } = true;
         public bool IsYGrid { get; set; } = true;
         public Brush GridLineColor { get; set; } = Brushes.LightGray;
         public double XTick { get; set; } = 1;
         public double YTick { get; set; } = 0.5;
-        public GridLinePatternEnum GridLinePattern { get; set; } 
+        public GridLinePatternEnum GridLinePattern { get; set; }
         public double LeftOffset = 20;
         public double RightOffset = 10;
         public double BottomOffset = 15;
         public Line GridLine { get; set; } = new Line();
 
         #endregion
-        public void AddChartstyle(TextBlock tbTitle,TextBlock tbXLabel,TextBlock tbYLabel)
+        public void AddChartstyle(TextBlock tbTitle, TextBlock tbXLabel, TextBlock tbYLabel)
         {
             chartCanvas.Children.Clear();
-           System.Windows.Point pt  = new System.Windows.Point();
+            System.Windows.Point pt = new System.Windows.Point();
             Line tick = new Line();
             double offset = 0;
-            double dx,dy;
+            double dx, dy;
             TextBlock tb = new TextBlock();
             //for 2dinteractive plot
             double optimalXSpacing = 100;
@@ -129,31 +123,31 @@ namespace EasyPlot
 
 
             //determine the right offset
-            tb.Text = Math.Round(XMax,0).ToString() ;
+            tb.Text = Math.Round(XMax, 0).ToString();
             tb.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
             System.Windows.Size size = tb.DesiredSize;
-            RightOffset = size.Width / 2 ;
+            RightOffset = size.Width / 2;
 
             //determine the left offset
 
             //for 2d interactive plot
             double xScale = 0.0, yScale = 0.0;
             double xSpacing = 0.0, ySpacing = 0.0;
-            double xTick = 0.0,yTick = 0.0;
+            double xTick = 0.0, yTick = 0.0;
             int xStart = 0, xEnd = 1;
-            int yStart = 0,yEnd = 1;
+            int yStart = 0, yEnd = 1;
             double offset0 = 30;
 
-            while(Math.Abs(offset - offset0) > 1)
+            while (Math.Abs(offset - offset0) > 1)
             {
                 if (XMin != XMax)
-                    xScale = (TextCanvas.Width - offset0 - RightOffset - 5) /(XMax - XMin);
-                if(YMin != Ymax)
+                    xScale = (TextCanvas.Width - offset0 - RightOffset - 5) / (XMax - XMin);
+                if (YMin != Ymax)
                 {
                     yScale = TextCanvas.Height / (Ymax - YMin);
-                   
+
                 }
-                
+
                 xSpacing = optimalXSpacing / xScale;
                 xTick = OptimalSpacing(xSpacing);
                 ySpacing = optimalYSpacing / yScale;
@@ -191,27 +185,27 @@ namespace EasyPlot
 
             } */
             //LeftOffset = offset + 5;
-            LeftOffset  = 50 + 5;
+            LeftOffset = 50 + 5;
 
             Canvas.SetLeft(ChartCanvas, LeftOffset);
             Canvas.SetBottom(ChartCanvas, BottomOffset);
-            ChartCanvas.Width = Math.Abs(TextCanvas.Width-LeftOffset-RightOffset);
-            chartCanvas.Height = Math.Abs(TextCanvas.Height-BottomOffset-size.Height/2);
+            ChartCanvas.Width = Math.Abs(TextCanvas.Width - LeftOffset - RightOffset);
+            chartCanvas.Height = Math.Abs(TextCanvas.Height - BottomOffset - size.Height / 2);
             //  System.Windows.Shapes.Rectangle chartRect = new System.Windows.Shapes.Rectangle();
             chartRect = new Rectangle();
             chartRect.Stroke = Brushes.Black;
             chartRect.Width = ChartCanvas.Width;
             chartRect.Height = ChartCanvas.Height;
             ChartCanvas.Children.Add(chartRect);
-            
-            
+
+
             //2d interactive
             if (XMin != XMax)
                 xScale = ChartCanvas.Width / (XMax - XMin);
             if (YMin != Ymax)
                 yScale = ChartCanvas.Height / (Ymax - YMin);
             xSpacing = optimalXSpacing / xScale;
-            
+
             xTick = OptimalSpacing(xSpacing);
             ySpacing = optimalYSpacing / yScale;
             yTick = OptimalSpacing(ySpacing);
@@ -253,7 +247,7 @@ namespace EasyPlot
                     GridLine.X2 = NormalizePoint(new Point(dx, Ymax)).X;
                     GridLine.Y2 = NormalizePoint(new Point(dx, Ymax)).Y;
                     ChartCanvas.Children.Add(GridLine);
-                   
+
                 }
                 /*
                 for(dx = xmin+XTick; dx < xmax; dx += XTick)
@@ -270,9 +264,9 @@ namespace EasyPlot
                 }
                 */
             }
-           //create horizontal gridlines
-           if(IsYGrid) 
-           {
+            //create horizontal gridlines
+            if (IsYGrid)
+            {
                 for (int i = yStart; i <= yEnd; i++)
                 {
                     GridLine = new Line();
@@ -285,20 +279,20 @@ namespace EasyPlot
 
                     ChartCanvas.Children.Add(GridLine);
                 }
-               /*
-               for(dy = YMin+YTick;dy<Ymax;dy += YTick)
-                {
-                    GridLine = new Line();
-                    AddLinePattern();
-                    GridLine.X1 = NormalizePoint(new Point(XMin, dy)).X;
-                    GridLine.Y1 = NormalizePoint(new Point(XMin, dy)).Y;
-                    GridLine.X2 = NormalizePoint(new Point(XMax, dy)).X;
-                    GridLine.Y2 = NormalizePoint(new Point(XMax, dy)).Y;
+                /*
+                for(dy = YMin+YTick;dy<Ymax;dy += YTick)
+                 {
+                     GridLine = new Line();
+                     AddLinePattern();
+                     GridLine.X1 = NormalizePoint(new Point(XMin, dy)).X;
+                     GridLine.Y1 = NormalizePoint(new Point(XMin, dy)).Y;
+                     GridLine.X2 = NormalizePoint(new Point(XMax, dy)).X;
+                     GridLine.Y2 = NormalizePoint(new Point(XMax, dy)).Y;
 
-                    ChartCanvas.Children.Add(GridLine);
+                     ChartCanvas.Children.Add(GridLine);
 
-                }  */
-           }
+                 }  */
+            }
 
             //create x-tick marks
             if (!HideX)
@@ -323,7 +317,7 @@ namespace EasyPlot
                     Canvas.SetTop(tb, pt.Y + 2 + size.Height / 2);
                 }
             }
-            
+
             /*
             for(dx = XMin;dx<=XMax;dx+=XTick)
              {
@@ -347,7 +341,7 @@ namespace EasyPlot
             */
 
             //create y-tick marks
-            if(!HideY)
+            if (!HideY)
             {
                 for (int i = yStart; i <= yEnd; i++)
                 {
@@ -372,7 +366,7 @@ namespace EasyPlot
                     Canvas.SetTop(tb, pt.Y);
                 }
             }
-           
+
             /*
             for (dy = YMin; dy <= Ymax; dy += YTick)
            {
@@ -409,7 +403,7 @@ namespace EasyPlot
             double dmin = 100 * multiplier;
             double spacing = 0.0;
             double mn = 100;
-            foreach(double d in da)
+            foreach (double d in da)
             {
                 double delta = Math.Abs(original - d * multiplier);
                 if (delta < dmin)
@@ -434,14 +428,14 @@ namespace EasyPlot
                 {
                     spacing = 0.5;
                 }
-                
+
             return spacing;
 
         }
         #endregion
         public System.Windows.Point NormalizePoint(System.Windows.Point pt)
         {
-           System.Windows.Point result = new System.Windows.Point();
+            System.Windows.Point result = new System.Windows.Point();
             if (ChartCanvas.Height.ToString() == "NaN")
             {
                 ChartCanvas.Height = 250;
@@ -455,7 +449,7 @@ namespace EasyPlot
             result.Y = ChartCanvas.Height - (pt.Y - YMin) * ChartCanvas.Height / (Ymax - YMin);
             return result;
         }
-        
+
         public void AddLinePattern()
         {
             GridLine.Stroke = GridLineColor;
@@ -478,7 +472,7 @@ namespace EasyPlot
         }
 
     }
-    
+
 
     public enum GridLinePatternEnum
     {

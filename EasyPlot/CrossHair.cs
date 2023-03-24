@@ -1,18 +1,10 @@
-﻿using Microsoft.Win32.SafeHandles;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using System.Windows.Shapes;
 using static EasyPlot.DataSeries;
 
 namespace EasyPlot
 {
-   
+
 
     public class CrossHair
     {
@@ -20,19 +12,19 @@ namespace EasyPlot
         public double Thickness { get { return thickness; } set { thickness = value; } }
 
         private Brush color { get; set; } = Brushes.Red;
-        public Brush Color { get { return color; } set {  color = value; } }
+        public Brush Color { get { return color; } set { color = value; } }
 
         private DataSeries.LinePatternEnum linePattern { get; set; } = DataSeries.LinePatternEnum.Solid;
-        public DataSeries.LinePatternEnum LinePattern { get { return linePattern; } set {  linePattern = value; } }
+        public DataSeries.LinePatternEnum LinePattern { get { return linePattern; } set { linePattern = value; } }
 
         public Line Line = new Line();
         public CrossHair()
         {
-           
-           
+
+
             Line = new Line();
-           
-            
+
+
         }
         public void AddLinePattern()
         {
@@ -58,6 +50,6 @@ namespace EasyPlot
             }
         }
     }
-    
+
 
 }

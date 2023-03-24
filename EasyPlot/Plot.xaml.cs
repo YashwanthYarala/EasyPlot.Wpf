@@ -3,18 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace EasyPlot
@@ -26,177 +18,177 @@ namespace EasyPlot
     {
         #region Parameters
 
-            #region class Objects
-            private ChartStyle cs { get; set; }
-                private DataCollection dc { get; set; }
-                private DataSeries ds { get; set; }
-                private SmartLoader smartLoader { get; set; }
-                private PlotSeriesEnum plotSeries { get; set; }
-            #endregion
+        #region class Objects
+        private ChartStyle cs { get; set; }
+        private DataCollection dc { get; set; }
+        private DataSeries ds { get; set; }
+        private SmartLoader smartLoader { get; set; }
+        private PlotSeriesEnum plotSeries { get; set; }
+        #endregion
 
-            #region CrossHairs
-            private CrossHair VerticalCrossHair { get; set; } = new CrossHair();
-                private CrossHair HorizontalCrossHair { get; set; } = new CrossHair();
+        #region CrossHairs
+        private CrossHair VerticalCrossHair { get; set; } = new CrossHair();
+        private CrossHair HorizontalCrossHair { get; set; } = new CrossHair();
 
-                private bool isCrossHair { get; set; } = false;
-                public bool IsCrossHair { get { return isCrossHair; } set { isCrossHair = value; } }
-            #endregion
+        private bool isCrossHair { get; set; } = false;
+        public bool IsCrossHair { get { return isCrossHair; } set { isCrossHair = value; } }
+        #endregion
 
-            #region Labels
+        #region Labels
 
-                public string Title_ { get; set; }
+        public string Title_ { get; set; }
 
-                /// <summary>
-                /// Sets or Gets the Y Axis Label (String)
-                /// </summary>
-                public string YLabel
-                {
-                    get { return cs.YLabel; }
-                    set { cs.YLabel = value; }
-                }
+        /// <summary>
+        /// Sets or Gets the Y Axis Label (String)
+        /// </summary>
+        public string YLabel
+        {
+            get { return cs.YLabel; }
+            set { cs.YLabel = value; }
+        }
 
-                /// <summary>
-                ///  Sets or Gets the Y Axis Label (String)
-                /// </summary>
-                public string XLabel
-                {
-                    get { return cs.XLabel; }
-                    set { cs.XLabel = value; }
-                }
-                /// <summary>
-                /// Sets or Gets the Title (String)
-                /// </summary>
-                public string Title
-                {
-                    get { return cs.Title; }
-                    set
-                    {
-                        cs.Title = value;
-                    }
-                }
-            #endregion
-
-            #region Limits
-
-                #region canvas limits
-                    protected static double xmin0 = 0;
-                    protected static double xmax0 = 10;
-                    protected static double ymin0 = -1.5;
-                    protected static double ymax0 = 1.5;
-                #endregion
-
-                #region panning limits
-                    //panning Limits
-                    private double x_left { get; set; } = double.NegativeInfinity;
-                    private double x_right { get; set; } = double.PositiveInfinity;
-                    private double y_down { get; set; } = double.NegativeInfinity;
-                    private double y_up { get; set; } = double.PositiveInfinity;
-
-            #endregion
-
-
-
-
-            #endregion
-
-            #region Coordinates
-                Coordinates coordinates = new Coordinates();
-                private double x_Coordinate { get; set; }
-                private double y_Coordinate { get; set; }
-
-                /// <summary>
-                /// Get the X-Coordinate of Pointer up to 4 Decimal Places.
-                /// Alternate:Use GetCoordinates(Int no_of_decimalPlaces).X
-                /// </summary>
-                public double X_Coordinate
-                {
-                    get { return Math.Round(x_Coordinate, 4); }
-
-                }
-
-                private int LockCount = 0;
-
-                public string Name { get; set; } = "";
-
-            /// <summary>
-            /// Get the Y-Coordinate of the pointer up to 4 Decimal Places.
-            /// Alternate:Use GetCoordinates(Int no_of_decimalPlaces).X
-            /// </summary>
-            public double Y_Coordinate
+        /// <summary>
+        ///  Sets or Gets the Y Axis Label (String)
+        /// </summary>
+        public string XLabel
+        {
+            get { return cs.XLabel; }
+            set { cs.XLabel = value; }
+        }
+        /// <summary>
+        /// Sets or Gets the Title (String)
+        /// </summary>
+        public string Title
+        {
+            get { return cs.Title; }
+            set
             {
-                get { return Math.Round(y_Coordinate, 4); }
+                cs.Title = value;
             }
+        }
+        #endregion
 
-            #endregion
+        #region Limits
 
-            #region Shapes and Points
-                private Point startpoint = new Point();
-                private Point endPoint = new Point();
-                private Shape rubberBand = null;
-                private bool isRectangle { get; set; } = true;
-                public bool IsReactangle
-                {
-                    get { return isRectangle; }
-                    set { isRectangle = value; }
-                }
-                 private double thickness { get; set; } = 1;
-            #endregion
+        #region canvas limits
+        protected static double xmin0 = 0;
+        protected static double xmax0 = 10;
+        protected static double ymin0 = -1.5;
+        protected static double ymax0 = 1.5;
+        #endregion
 
-            #region Graph XY Data
-            private Dictionary<double, double> XYDict { get; set; }
-                private double[] xvalues_smart { get; set; } = new double[0];
-                private double[] yvalues_smart { get; set; } = new double[0];
-                private static double[] xVal { get; set; }
-                private static double[] yVal { get; set; }
-            #endregion
+        #region panning limits
+        //panning Limits
+        private double x_left { get; set; } = double.NegativeInfinity;
+        private double x_right { get; set; } = double.PositiveInfinity;
+        private double y_down { get; set; } = double.NegativeInfinity;
+        private double y_up { get; set; } = double.PositiveInfinity;
 
-            #region Zooming
-            private bool isZoomLock { get; set; } = false;
-                /// <summary>
-                /// Sets ot Get the ZoomLock of the Plot.
-                /// </summary>
-                public bool IsZoomLock
-                {
-                    get { return isZoomLock; }
-                    set { isZoomLock = value; }
-                }
-                #endregion
+        #endregion
 
-            #region Panning
-                private bool IsPanningLock { get; set; } = false;
-                    private bool IsPanningLock_X { get; set; } = false;
-                    private bool IsPanningLock_Y { get; set; } = false;
-            #endregion
 
-            #region Symbols
-                public Symbols.SymbolTypeEnum SymbolType { get { return symboltype; } set { symboltype = value; } }
-                private Symbols.SymbolTypeEnum symboltype { get; set; }
-                private Brush symbolColor { get; set; }
-                public Brush SymbolColor { get { return symbolColor; } set { symbolColor = value; } }
-            #endregion
 
-            #region Reading Data
-                private bool isReadData { get; set; } = true;
-                public bool IsReadData
-                {
-                    get { return isReadData; }
-                    set { isReadData = value; }
-                }
-            #endregion
 
-            #region Mouse Events
-                #region MatchAxis
-                private bool matchAxis { get; set; } = true;
+        #endregion
 
-                /// <summary>
-                ///Event Hander that triggers when the axis of the plot are changed. 
-                /// </summary>
-                public event EventHandler<double[]> AxisChangedEventHandler;
-            #endregion
+        #region Coordinates
+        Coordinates coordinates = new Coordinates();
+        private double x_Coordinate { get; set; }
+        private double y_Coordinate { get; set; }
 
-                #region Mouse Wheel Events
-                    private double xIncrement { get; set; } = 5;
-                    private double yIncrement { get; set; } = 0;
+        /// <summary>
+        /// Get the X-Coordinate of Pointer up to 4 Decimal Places.
+        /// Alternate:Use GetCoordinates(Int no_of_decimalPlaces).X
+        /// </summary>
+        public double X_Coordinate
+        {
+            get { return Math.Round(x_Coordinate, 4); }
+
+        }
+
+        private int LockCount = 0;
+
+        public string Name { get; set; } = "";
+
+        /// <summary>
+        /// Get the Y-Coordinate of the pointer up to 4 Decimal Places.
+        /// Alternate:Use GetCoordinates(Int no_of_decimalPlaces).X
+        /// </summary>
+        public double Y_Coordinate
+        {
+            get { return Math.Round(y_Coordinate, 4); }
+        }
+
+        #endregion
+
+        #region Shapes and Points
+        private Point startpoint = new Point();
+        private Point endPoint = new Point();
+        private Shape rubberBand = null;
+        private bool isRectangle { get; set; } = true;
+        public bool IsReactangle
+        {
+            get { return isRectangle; }
+            set { isRectangle = value; }
+        }
+        private double thickness { get; set; } = 1;
+        #endregion
+
+        #region Graph XY Data
+        private Dictionary<double, double> XYDict { get; set; }
+        private double[] xvalues_smart { get; set; } = new double[0];
+        private double[] yvalues_smart { get; set; } = new double[0];
+        private static double[] xVal { get; set; }
+        private static double[] yVal { get; set; }
+        #endregion
+
+        #region Zooming
+        private bool isZoomLock { get; set; } = false;
+        /// <summary>
+        /// Sets ot Get the ZoomLock of the Plot.
+        /// </summary>
+        public bool IsZoomLock
+        {
+            get { return isZoomLock; }
+            set { isZoomLock = value; }
+        }
+        #endregion
+
+        #region Panning
+        private bool IsPanningLock { get; set; } = false;
+        private bool IsPanningLock_X { get; set; } = false;
+        private bool IsPanningLock_Y { get; set; } = false;
+        #endregion
+
+        #region Symbols
+        public Symbols.SymbolTypeEnum SymbolType { get { return symboltype; } set { symboltype = value; } }
+        private Symbols.SymbolTypeEnum symboltype { get; set; }
+        private Brush symbolColor { get; set; }
+        public Brush SymbolColor { get { return symbolColor; } set { symbolColor = value; } }
+        #endregion
+
+        #region Reading Data
+        private bool isReadData { get; set; } = true;
+        public bool IsReadData
+        {
+            get { return isReadData; }
+            set { isReadData = value; }
+        }
+        #endregion
+
+        #region Mouse Events
+        #region MatchAxis
+        private bool matchAxis { get; set; } = true;
+
+        /// <summary>
+        ///Event Hander that triggers when the axis of the plot are changed. 
+        /// </summary>
+        public event EventHandler<double[]> AxisChangedEventHandler;
+        #endregion
+
+        #region Mouse Wheel Events
+        private double xIncrement { get; set; } = 5;
+        private double yIncrement { get; set; } = 0;
         #endregion
         #endregion
 
@@ -209,10 +201,10 @@ namespace EasyPlot
         {
             InitializeComponent();
             // GenData genData = new GenData();
-           
-           
+
+
             cs = new ChartStyle();
-            ds = new DataSeries(); 
+            ds = new DataSeries();
             dc = new DataCollection();
             cs.ChartCanvas = chartCanvas;
             cs.TextCanvas = textCanvas;
@@ -223,8 +215,8 @@ namespace EasyPlot
             cs.Ymax = ymax0;
             symboltype = Symbols.SymbolTypeEnum.None;
             smartLoader = new SmartLoader();
-            XYDict  = new Dictionary<double, double>();
-            
+            XYDict = new Dictionary<double, double>();
+
         }
         #region Plot Series Types
 
@@ -268,15 +260,15 @@ namespace EasyPlot
             {
                 if ((xvalues.Length != yvalues.Length))
                 {
-                    throw new Exception("Data Count Not Matching in X and Y " +ex.Message);
+                    throw new Exception("Data Count Not Matching in X and Y " + ex.Message);
                 }
                 else if (xvalues == null || yvalues == null)
                 {
-                    throw new Exception("No Data Found To Plot "+ex.Message);
+                    throw new Exception("No Data Found To Plot " + ex.Message);
                 }
 
             }
-            
+
 
         }
 
@@ -297,10 +289,10 @@ namespace EasyPlot
                 {
 
                     ds.LineSeries.Points.Add(new Point(xvalues[i], yvalues[i]));
-                    
+
                 }
                 ds.Symbols.SymbolType = symboltype;
-                if(symbolColor !=  null)
+                if (symbolColor != null)
                 {
                     ds.Symbols.FillColor = symbolColor;
                 }
@@ -308,39 +300,40 @@ namespace EasyPlot
                 {
                     ds.Symbols.FillColor = ds.LineColor;
                 }
-               
+
 
                 dc = new DataCollection();
                 dc.DataList.Add(ds);
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                if((xvalues.Length != yvalues.Length))
+                if ((xvalues.Length != yvalues.Length))
                 {
-                    throw new Exception("Data Count Not Matching in X and Y "+ex.Message);
+                    throw new Exception("Data Count Not Matching in X and Y " + ex.Message);
                 }
-                else if( xvalues == null || yvalues == null)
+                else if (xvalues == null || yvalues == null)
                 {
                     throw new Exception("No Data Found To Plot " + ex.Message);
                 }
 
             }
-            
+
         }
         #endregion
         #region Chart Related
         private void AddChart(double xmin, double xmax, double ymin, double ymax)
         {
             //Panning Limits Validation.
-           
+
             if (xmin < x_left)
             {
                 xmin = x_left;
             }
-            if(xmax>x_right)
+            if (xmax > x_right)
             {
                 xmax = x_right;
             }
-            if(ymin < y_down)
+            if (ymin < y_down)
             {
                 ymin = y_down;
             }
@@ -348,7 +341,7 @@ namespace EasyPlot
             {
                 ymax = y_up;
             }
-            
+
             //Panning validation Ends Here.
 
             cs.Title = Title_;
@@ -357,9 +350,9 @@ namespace EasyPlot
             cs.XMax = xmax;
             cs.YMin = ymin;
             cs.Ymax = ymax;
-           
-            
-           
+
+
+
             cs.GridLinePattern = GridLinePatternEnum.Dot;
             cs.GridLineColor = Brushes.Black;
             cs.AddChartstyle(tbTitle, tbXLabel, tbYLabel);
@@ -387,7 +380,7 @@ namespace EasyPlot
                 LockCount++;
             }
             smartLoader = new SmartLoader();
-            var val = smartLoader.GetValues(cs, xvalues_smart,yvalues_smart);
+            var val = smartLoader.GetValues(cs, xvalues_smart, yvalues_smart);
             //switch (plotSeries)
             //{
             //    case PlotSeriesEnum.Scatter:
@@ -410,17 +403,17 @@ namespace EasyPlot
 
             dc.AddLines(cs);
 
-           
+
         }
         private void chartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             tbDate.Text = DateTime.Now.ToShortDateString();
-           
+
             textCanvas.Width = chartGrid.ActualWidth;
             textCanvas.Height = chartGrid.ActualHeight;
             chartCanvas.Children.Clear();
             textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
-            
+
             AddChart(cs.XMin, cs.XMax, cs.YMin, cs.Ymax);
         }
         #endregion
@@ -439,25 +432,25 @@ namespace EasyPlot
                 textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
                 AddChart(x0, x1, y0, y1);
             }
-           
-            
+
+
         }
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!chartCanvas.IsMouseCaptured)
             {
                 startpoint = e.GetPosition(chartCanvas);
-              //  chartCanvas.Cursor = Cursors.Cross;
+                //  chartCanvas.Cursor = Cursors.Cross;
                 chartCanvas.CaptureMouse();
                 chartCanvas.Cursor = Cursors.Hand;
 
-               
+
             }
         }
         private void OnMouseMove(object sender, MouseEventArgs e)
-        {   
+        {
             chartCanvas.ToolTip = null;
-            
+
             if (chartCanvas.IsMouseCaptured)
             {
 
@@ -465,7 +458,7 @@ namespace EasyPlot
                 endPoint = e.GetPosition(chartCanvas);
                 if (Keyboard.IsKeyDown(Key.RightCtrl) || Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
-                    
+
                     if (rubberBand == null)
                     {
                         rubberBand = new Rectangle();
@@ -483,17 +476,17 @@ namespace EasyPlot
                 }
                 else
                 {
-                    if(!IsPanningLock)
+                    if (!IsPanningLock)
                     {
                         chartCanvas.Cursor = Cursors.Hand;
-                        
+
                         tt.X = -(endPoint.X - startpoint.X);
                         tt.Y = (endPoint.Y - startpoint.Y);
                         for (int i = 0; i < dc.DataList.Count; i++)
                         {
 
                             dc.DataList[i].LineSeries.RenderTransform = tt;
-                             
+
                         }
 
                         double dx = 0;
@@ -503,17 +496,17 @@ namespace EasyPlot
                         double x1 = 1;
                         double y1 = 1;
                         //  endPoint = e.GetPosition(chartCanvas);
-                        if(!IsPanningLock_X)
+                        if (!IsPanningLock_X)
                         {
                             dx = (cs.XMax - cs.XMin) * (endPoint.X - startpoint.X) / chartCanvas.Width;
                         }
-                        if(!IsPanningLock_Y)
+                        if (!IsPanningLock_Y)
                         {
                             dy = (cs.Ymax - cs.YMin) * (endPoint.Y - startpoint.Y) / chartCanvas.Height;
                         }
-                       
-                       
-                       
+
+
+
                         x0 = cs.XMin - dx / 5;
                         x1 = cs.XMax - dx / 5;
                         y0 = cs.YMin + dy / 10;
@@ -524,9 +517,9 @@ namespace EasyPlot
                         AddChart(x0, x1, y0, y1);
 
                         //  chartCanvas.ReleaseMouseCapture();
-                     //   chartCanvas.Cursor = Cursors.Arrow;
+                        //   chartCanvas.Cursor = Cursors.Arrow;
                     }
-                    
+
                 }
 
 
@@ -537,7 +530,7 @@ namespace EasyPlot
                 chartCanvas.Cursor = Cursors.Cross;
                 //  chartCanvasToolTip.Cursor = Cursors.Cross;
 
-               
+
 
 
                 if (isReadData)
@@ -564,11 +557,11 @@ namespace EasyPlot
                             y_Coordinate = y;
                             VerticalCrossHair = new CrossHair();
                             HorizontalCrossHair = new CrossHair();
-                            
+
 
                         }
-                        
-                        
+
+
 
 
                     }
@@ -679,11 +672,11 @@ namespace EasyPlot
                     rubberBand = null;
                     chartCanvas.ReleaseMouseCapture();
                 }
-                
+
             }
             else
             {
-                if(!IsPanningLock)
+                if (!IsPanningLock)
                 {
                     // Panning with mouse left button down
                     /*
@@ -712,7 +705,7 @@ namespace EasyPlot
                     chartCanvas.ReleaseMouseCapture();
                     chartCanvas.Cursor = Cursors.Arrow;
                 }
-                
+
             }
 
 
@@ -733,9 +726,9 @@ namespace EasyPlot
         ///<summary>
         ///This Method Sets The Grid Lines to Plot
         ///</summary>
-        public void IsGrid(bool IsXgrid,bool IsYgrid)
+        public void IsGrid(bool IsXgrid, bool IsYgrid)
         {
-            
+
             cs.IsYGrid = IsYgrid;
             cs.IsXGrid = IsXgrid;
         }
@@ -745,7 +738,7 @@ namespace EasyPlot
         ///</summary>
         public void IsXGrid(bool IsXgrid)
         {
-            
+
             cs.IsXGrid = IsXgrid;
         }
 
@@ -754,7 +747,7 @@ namespace EasyPlot
         ///</summary>
         public void IsYGrid(bool IsYgrid)
         {
-           
+
             cs.IsYGrid = IsYgrid;
         }
 
@@ -764,7 +757,7 @@ namespace EasyPlot
         ///</summary>
         public void GridLineThickness(double thickness)
         {
-           
+
             cs.GridLine.StrokeThickness = thickness;
         }
 
@@ -774,7 +767,7 @@ namespace EasyPlot
         ///</summary>
         public void GridLineColor(Brush brush)
         {
-           
+
 
             cs.GridLineColor = brush;
         }
@@ -785,7 +778,7 @@ namespace EasyPlot
         ///</summary>
         public void IsGridVisible(bool IsVisible)
         {
-            
+
             cs.IsYGrid = IsVisible;
             cs.IsXGrid = IsVisible;
         }
@@ -795,9 +788,9 @@ namespace EasyPlot
         /// </summary>
         /// <param name="isXVisible"></param>
         /// <param name="isYVisible"></param>
-        public void  HideLabels(bool isXVisible,bool isYVisible)
+        public void HideLabels(bool isXVisible, bool isYVisible)
         {
-            if(isXVisible)
+            if (isXVisible)
             {
                 tbXLabel.Visibility = Visibility.Visible;
             }
@@ -805,15 +798,15 @@ namespace EasyPlot
             {
                 tbXLabel.Visibility = Visibility.Collapsed;
             }
-            if(isYVisible)
+            if (isYVisible)
             {
                 tbYLabel.Visibility = Visibility.Visible;
             }
             else
             {
-                tbYLabel.Visibility= Visibility.Collapsed;
+                tbYLabel.Visibility = Visibility.Collapsed;
             }
-            
+
         }
         public void SetRectangle(bool isRectangle)
         {
@@ -826,7 +819,7 @@ namespace EasyPlot
             {
                 cs.chartRect.Visibility = Visibility.Hidden;
             }
-               
+
         }
 
         /// <summary>
@@ -846,7 +839,7 @@ namespace EasyPlot
         /// <param name="Thickness"></param>
         public void PlotThickness(double Thickness)
         {
-                thickness = Thickness;
+            thickness = Thickness;
         }
 
         /// <summary>
@@ -879,7 +872,7 @@ namespace EasyPlot
         /// <param name="xmax"></param>
         /// <param name="ymin"></param>
         /// <param name="ymax"></param>
-        public void SetAxisLimits(double xmin,double xmax,double ymin,double ymax)
+        public void SetAxisLimits(double xmin, double xmax, double ymin, double ymax)
         {
             xmin0 = xmin; xmax0 = xmax;
             ymin0 = ymin; ymax0 = ymax;
@@ -908,7 +901,7 @@ namespace EasyPlot
         public void SetYAxisLimits(double ymin, double ymax)
         {
             ymin0 = ymin; ymax0 = ymax;
-            cs.YMin = ymin0;cs.Ymax = ymax0;
+            cs.YMin = ymin0; cs.Ymax = ymax0;
         }
 
         /// <summary>
@@ -992,7 +985,7 @@ namespace EasyPlot
             limits[1] = cs.XMax;
             return limits;
         }
-        
+
         /// <summary>
         /// This Method is used to Get the Current limits of the Y Axis.
         /// </summary>
@@ -1005,19 +998,19 @@ namespace EasyPlot
             return limits;
         }
 
-       /// <summary>
-       /// This Method matches the axis limits of the plot to the limits of source plot passed as arguments.
-       /// </summary>
-       /// <param name="xlimits"></param>
-       /// <param name="ylimits"></param>
+        /// <summary>
+        /// This Method matches the axis limits of the plot to the limits of source plot passed as arguments.
+        /// </summary>
+        /// <param name="xlimits"></param>
+        /// <param name="ylimits"></param>
         public void MatchAxisLimits(double[] xlimits, double[] ylimits)
         {
             if (matchAxis)
             {
-                Exception ex  = null;
+                Exception ex = null;
                 try
                 {
-                    if(xlimits == null || ylimits == null)
+                    if (xlimits == null || ylimits == null)
                     {
                         ex = new Exception("Either of the limits or both the limits are null");
 
@@ -1028,14 +1021,14 @@ namespace EasyPlot
                         {
                             cs.XMax = xlimits[1];
                             cs.XMin = xlimits[0];
-                            cs.YMin= ylimits[0];
-                            cs.Ymax= ylimits[1];
+                            cs.YMin = ylimits[0];
+                            cs.Ymax = ylimits[1];
 
-                          //  xmin0 = xlimits[0];xmax0 = xlimits[1];
-                          //  ymin0 = ylimits[0]; ymax0 = ylimits[1];
+                            //  xmin0 = xlimits[0];xmax0 = xlimits[1];
+                            //  ymin0 = ylimits[0]; ymax0 = ylimits[1];
                             chartCanvas.Children.Clear();
                             textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
-                            AddChart(cs.XMin,cs.XMax,cs.YMin,cs.Ymax);
+                            AddChart(cs.XMin, cs.XMax, cs.YMin, cs.Ymax);
 
                         }
                         else
@@ -1043,13 +1036,13 @@ namespace EasyPlot
                             ex = new Exception("Out of Index ");
                         }
                     }
-                    
+
                 }
-                catch  
+                catch
                 {
-                    MessageBox.Show(ex.Message,"MatchAxisLimits",MessageBoxButton.OK,MessageBoxImage.Error);
+                    MessageBox.Show(ex.Message, "MatchAxisLimits", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-               
+
             }
         }
         /// <summary>
@@ -1060,7 +1053,7 @@ namespace EasyPlot
         /// <param name="X_right"></param>
         /// <param name="Y_down"></param>
         /// <param name="Y_up"></param>
-        public void SetPanningLimits(double X_left,double X_right,double Y_down,double Y_up)
+        public void SetPanningLimits(double X_left, double X_right, double Y_down, double Y_up)
         {
             x_left = X_left;
             x_right = X_right;
@@ -1103,14 +1096,14 @@ namespace EasyPlot
             IsZoomLock = isZoomLock;
         }
 
-       
+
         /// <summary>
         /// This Method Sets Title ,X-label,Y-Label of the Plot
         /// </summary>
         /// <param name="title"></param>
         /// <param name="xlabel"></param>
         /// <param name="ylabel"></param>
-        public void SetPlotLabels(string title,string xlabel,string ylabel)
+        public void SetPlotLabels(string title, string xlabel, string ylabel)
         {
             Title = title;
             XLabel = xlabel;
@@ -1126,18 +1119,18 @@ namespace EasyPlot
         public Coordinates GetCoordinates(int Round_to = 4)
         {
             coordinates = new Coordinates();
-            coordinates.X = Math.Round(x_Coordinate,Round_to);
-            coordinates.Y = Math.Round(Y_Coordinate,Round_to);
+            coordinates.X = Math.Round(x_Coordinate, Round_to);
+            coordinates.Y = Math.Round(Y_Coordinate, Round_to);
             return coordinates;
         }
-       
+
         #endregion
         #endregion
-        
+
         public class Coordinates
         {
             public double X { get; set; }
-            public double Y { get;set; }
+            public double Y { get; set; }
         }
 
         private void chartCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1152,8 +1145,8 @@ namespace EasyPlot
     {
         None = 0,
         Scatter = 1,
-        PulseGate  = 2,
+        PulseGate = 2,
     }
-    
-   
+
+
 }

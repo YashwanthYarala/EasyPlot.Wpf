@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace EasyPlot
 {
@@ -11,8 +6,8 @@ namespace EasyPlot
     {
         public List<List<double>> Convert(double[] SignalValues, double[] TimeValues)
         {
-           List<double> TimePoints = new List<double>();
-           List<double>  SignalPoints = new List<double>();
+            List<double> TimePoints = new List<double>();
+            List<double> SignalPoints = new List<double>();
 
 
             for (int i = 0; i < SignalValues.Length - 1; i++)
