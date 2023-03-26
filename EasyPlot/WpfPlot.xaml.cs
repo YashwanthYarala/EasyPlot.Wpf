@@ -7,7 +7,7 @@ namespace EasyPlot
     /// <summary>
     /// Interaction logic for WpfPlot.xaml
     /// </summary>
-    public partial class WpfPlot : UserControl
+    public partial class WpfPlot :UserControl
     {
         public Plot Plot { get; set; }
 
