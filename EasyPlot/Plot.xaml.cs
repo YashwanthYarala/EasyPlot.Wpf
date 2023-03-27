@@ -2,12 +2,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Xaml.Schema;
 
 namespace EasyPlot
 {
@@ -35,7 +38,9 @@ namespace EasyPlot
             #endregion
 
             #region Labels
-
+            
+            public int id { get; set; }
+            
             public string Title_ { get; set; }
 
             /// <summary>
@@ -64,14 +69,19 @@ namespace EasyPlot
                 set
                 {
                     cs.Title = value;
+                    
                 }
             }
-            #endregion
+        #endregion
 
             #region Limits
 
-            #region canvas limits
-            protected static double xmin0 = 0;
+        #region canvas limits
+              private double Xmin0 = 0;
+            protected  double xmin0 
+            {    get { return Xmin0; }
+                 set { Xmin0 = value; } 
+            }    
             protected static double xmax0 = 10;
             protected static double ymin0 = -1.5;
             protected static double ymax0 = 1.5;
@@ -179,7 +189,7 @@ namespace EasyPlot
             #region Mouse Events
             #region MatchAxis
             private bool matchAxis { get; set; } = true;
-
+            public double[] TestDouble = new double[4];
             /// <summary>
             ///Event Hander that triggers when the axis of the plot are changed. 
             /// </summary>
@@ -433,6 +443,7 @@ namespace EasyPlot
                         chartCanvas.Children.Clear();
                         textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
                         AddChart(x0, x1, y0, y1);
+                        RaiseCustomRoutedEvent();
                     }
 
 
@@ -513,14 +524,14 @@ namespace EasyPlot
                                 x1 = cs.XMax - dx / 5;
                                 y0 = cs.YMin + dy / 10;
                                 y1 = cs.Ymax + dy / 10;
-
+                                  
                                 chartCanvas.Children.Clear();
                                 textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
                                 AddChart(x0, x1, y0, y1);
-
-                                //  chartCanvas.ReleaseMouseCapture();
-                                //   chartCanvas.Cursor = Cursors.Arrow;
-                            }
+                                RaiseCustomRoutedEvent();
+                        //  chartCanvas.ReleaseMouseCapture();
+                        //   chartCanvas.Cursor = Cursors.Arrow;
+                    }
 
                         }
 
@@ -625,7 +636,7 @@ namespace EasyPlot
                 }
                 private void OnMouseLeave(object sender, MouseEventArgs e)
                 {
-
+                    
                 }
                 private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
                 {
@@ -668,7 +679,7 @@ namespace EasyPlot
                         chartCanvas.Children.Clear();
                         textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
                         AddChart(x0, x1, y0, y1);
-
+                        RaiseCustomRoutedEvent();
                         if (rubberBand != null)
                         {
                             rubberBand = null;
@@ -703,7 +714,7 @@ namespace EasyPlot
                             chartCanvas.Children.Clear();
                             textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
                             AddChart(x0, x1, y0, y1);
-
+                             RaiseCustomRoutedEvent();
                             chartCanvas.ReleaseMouseCapture();
                             chartCanvas.Cursor = Cursors.Arrow;
                         }
@@ -719,6 +730,7 @@ namespace EasyPlot
                     chartCanvas.Children.Clear();
                     textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
                     AddChart(xmin0, xmax0, ymin0, ymax0);
+                     RaiseCustomRoutedEvent();
                 }
             #endregion
        
@@ -1150,14 +1162,47 @@ namespace EasyPlot
                 Scatter = 1,
                 PulseGate = 2,
             }
-        #endregion
+        #endregion  
         private void chartCanvas_SizeChanged(object sender, SizeChangedEventArgs e)
         {
 
         }
+
+
+       
+
     }
-   
-   
+    public partial class Plot 
+    {
+        // Register a custom routed event using the Bubble routing strategy.
+        public static readonly RoutedEvent AxisEvent = EventManager.RegisterRoutedEvent(
+            name: "AxisChanged",
+            routingStrategy: RoutingStrategy.Bubble,
+            handlerType: typeof(RoutedEventHandler),
+            ownerType: typeof(Plot));
+
+        // Provide CLR accessors for assigning an event handler.
+        public event RoutedEventHandler AxisChanged
+        {
+            add { AddHandler(AxisEvent, value); }
+            remove { RemoveHandler(AxisEvent, value); }
+        }
+
+        void RaiseCustomRoutedEvent()
+        {
+            // Create a RoutedEventArgs instance.
+            RoutedEventArgs routedEventArgs = new(routedEvent: AxisEvent);
+
+            // Raise the event, which will bubble up through the element tree.
+            RaiseEvent(routedEventArgs);
+        }
+
+        // For demo purposes, we use the Click event as a trigger.
+        
+    }
+
+
+
 
 
 }
