@@ -148,8 +148,8 @@ namespace EasyPlot
             private Dictionary<double, double> XYDict { get; set; }
             private double[] xvalues_smart { get; set; } = new double[0];
             private double[] yvalues_smart { get; set; } = new double[0];
-            private static double[] xVal { get; set; }
-            private static double[] yVal { get; set; }
+            private  double[] xVal { get; set; }
+            private  double[] yVal { get; set; }
             #endregion
 
             #region Zooming
