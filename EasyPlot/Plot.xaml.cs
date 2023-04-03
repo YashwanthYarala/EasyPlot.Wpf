@@ -76,13 +76,13 @@ namespace EasyPlot
 
             #region Limits
 
-        #region canvas limits
+            #region canvas limits
               private double Xmin0 = 0;
             protected  double xmin0 
             {    get { return Xmin0; }
                  set { Xmin0 = value; } 
             }    
-            protected static double xmax0 = 10;
+            protected static double xmax0 = 100;
             protected static double ymin0 = -1.5;
             protected static double ymax0 = 1.5;
             #endregion
@@ -94,15 +94,21 @@ namespace EasyPlot
             private double y_down { get; set; } = double.NegativeInfinity;
             private double y_up { get; set; } = double.PositiveInfinity;
 
-            #endregion
+        #endregion
 
 
 
 
-            #endregion
+        #endregion
 
+            #region Parallel Plots
+        public bool IsUsedAsParallel { get { return cs.IsUsedAsParallel; } set { cs.IsUsedAsParallel = value; } }
+        internal bool IsUsedAsXaxis { get { return cs.IsUsedasXaxis; }set { cs.IsUsedasXaxis = value; } }
+       internal Brush ChartRectStroke { get { return cs.ChartRectStrike; } set { cs.ChartRectStrike = value; } }
+        #endregion
+          
             #region Coordinates
-            Coordinates coordinates = new Coordinates();
+        Coordinates coordinates = new Coordinates();
             private double x_Coordinate { get; set; }
             private double y_Coordinate { get; set; }
 
@@ -142,6 +148,8 @@ namespace EasyPlot
                 set { isRectangle = value; }
             }
             private double thickness { get; set; } = 1;
+            private Brush plotColor { get; set; } = Brushes.Blue;
+            public Brush PlotColor { get { return plotColor; } set { plotColor = value; } }
             #endregion
 
             #region Graph XY Data
@@ -366,12 +374,15 @@ namespace EasyPlot
 
                     cs.GridLinePattern = GridLinePatternEnum.Dot;
                     cs.GridLineColor = Brushes.Black;
+                    cs.Title = "Title";
                     cs.AddChartstyle(tbTitle, tbXLabel, tbYLabel);
 
                     dc = new DataCollection();
                     ds = new DataSeries();
                     ds.LineThickness = thickness;
-                    ds.LineColor = Brushes.Blue;
+                    //ds.LineColor = Brushes.Blue;
+                    ds.LineColor = plotColor;
+
                     double[] limits_ = { xmin, xmax, ymin, ymax };
                     if (matchAxis)
                     {
@@ -436,8 +447,8 @@ namespace EasyPlot
                     {
                         double dx = (e.Delta > 0) ? xIncrement : -xIncrement;
                         double dy = (e.Delta > 0) ? yIncrement : -yIncrement;
-                        double x0 = cs.XMin + (cs.XMax - cs.XMin) * dx / chartCanvas.Width;
-                        double x1 = cs.XMax - (cs.XMax - cs.XMin) * dx / chartCanvas.Width;
+                        double x0 = cs.XMin + (cs.XMax - cs.XMin) *10* dx / chartCanvas.Width;
+                        double x1 = cs.XMax - (cs.XMax - cs.XMin) *10* dx / chartCanvas.Width;
                         double y0 = cs.YMin + (cs.Ymax - cs.YMin) * dy / chartCanvas.Height;
                         double y1 = cs.Ymax - (cs.Ymax - cs.YMin) * dy / chartCanvas.Height;
                         chartCanvas.Children.Clear();
@@ -520,8 +531,8 @@ namespace EasyPlot
 
 
 
-                                x0 = cs.XMin - dx / 5;
-                                x1 = cs.XMax - dx / 5;
+                                x0 = cs.XMin - dx / 2;
+                                x1 = cs.XMax - dx / 2;
                                 y0 = cs.YMin + dy / 10;
                                 y1 = cs.Ymax + dy / 10;
                                   
@@ -730,7 +741,7 @@ namespace EasyPlot
                     chartCanvas.Children.Clear();
                     textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
                     AddChart(xmin0, xmax0, ymin0, ymax0);
-                     RaiseCustomRoutedEvent();
+                    RaiseCustomRoutedEvent();
                 }
             #endregion
        

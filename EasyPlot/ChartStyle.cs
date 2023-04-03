@@ -1,13 +1,28 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Ink;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace EasyPlot
 {
-    public class ChartStyle
+    public  class ChartStyle
     {
+        private bool isUsedAsParallel { get; set; } = false;
+
+        private Brush chartRectStroke { get; set; } = Brushes.Black;
+
+        internal Thickness chartGridStrokeThickness { get; set; } 
+        internal Brush ChartRectStrike { get { return  chartRectStroke; } set { chartRectStroke = value; } }
+        public bool IsUsedAsParallel { get { return isUsedAsParallel; } set { isUsedAsParallel = value; } }
+
+        private bool isUsedAsXaxis { get;set; } = false;
+        internal  bool IsUsedasXaxis
+        {
+            get { return isUsedAsXaxis; }
+            set { isUsedAsXaxis = value; }
+        }
         public bool HideX { get; set; } = false; public bool HideY { get; set; } = false;
         private Canvas chartCanvas;
         private double xmin;
@@ -188,12 +203,20 @@ namespace EasyPlot
             LeftOffset = 50 + 5;
 
             Canvas.SetLeft(ChartCanvas, LeftOffset);
-            Canvas.SetBottom(ChartCanvas, BottomOffset);
+            //var btmOffset = isUsedAsParallel == false ?BottomOffset:0;
+            var btmOffset = isUsedAsParallel ? (isUsedAsXaxis ? 30 : 0) : (isUsedAsXaxis ? 30: BottomOffset);
+            Canvas.SetBottom(ChartCanvas, btmOffset);
+
+            //Canvas.SetTop(ChartCanvas, 0);
             ChartCanvas.Width = Math.Abs(TextCanvas.Width - LeftOffset - RightOffset);
-            chartCanvas.Height = Math.Abs(TextCanvas.Height - BottomOffset - size.Height / 2);
+          //  var canvasHeight = isUsedAsParallel? TextCanvas.Height: Math.Abs(TextCanvas.Height - BottomOffset - size.Height / 2);
+            var canvasHeight = isUsedAsParallel ? (IsUsedasXaxis ? (TextCanvas.Height - btmOffset) : TextCanvas.Height) : Math.Abs(TextCanvas.Height - BottomOffset - size.Height / 2);
+            //  chartCanvas.Height = 
+            chartCanvas.Height = canvasHeight ;
             //  System.Windows.Shapes.Rectangle chartRect = new System.Windows.Shapes.Rectangle();
-            chartRect = new Rectangle();
-            chartRect.Stroke = Brushes.Black;
+            //  chartRect = new Rectangle();
+           
+            chartRect.Stroke = chartRectStroke;
             chartRect.Width = ChartCanvas.Width;
             chartRect.Height = ChartCanvas.Height;
             ChartCanvas.Children.Add(chartRect);
